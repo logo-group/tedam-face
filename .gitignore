@@ -1,0 +1,16 @@
+target/
+bin/
+config/config.properties
+config/config_mssql.properties
+config/config_mysql.properties
+
+# IntelliJ project files
+*.iml
+*.iws
+*.ipr
+.idea/
+
+# eclipse project file
+.settings/
+.classpath
+.project
