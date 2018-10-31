@@ -217,6 +217,7 @@
                 <configuration>
                     <extraJvmArgs>-Xmx2G</extraJvmArgs>
                 </configuration>
+                <!-- this block commentted because of vaadin licence issues on travis
                 <executions>
                     <execution>
                         <goals>
@@ -227,6 +228,7 @@
                         </goals>
                     </execution>
                 </executions>
+                 -->
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
