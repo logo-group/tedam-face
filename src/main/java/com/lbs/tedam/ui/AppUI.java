@@ -17,11 +17,12 @@
 
 package com.lbs.tedam.ui;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.lbs.tedam.ui.localization.LocalizationManager;
 import com.lbs.tedam.ui.navigation.NavigationManager;
 import com.lbs.tedam.ui.view.access.AccessDeniedView;
 import com.lbs.tedam.util.HasLogger;
-import com.vaadin.addon.charts.ChartOptions;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Viewport;
@@ -30,7 +31,6 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.UI;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Theme("apptheme")
 @SpringUI
@@ -57,9 +57,6 @@ public class AppUI extends UI implements HasLogger {
             Throwable t = DefaultErrorHandler.findRelevantThrowable(event.getThrowable());
             getLogger().error("Error during request", t);
         });
-
-        // Set the theme ("globally") for all Charts
-        ChartOptions.get(this).setTheme(new ChartsTheme());
 
         viewProvider.setAccessDeniedViewClass(AccessDeniedView.class);
         setContent(mainView);

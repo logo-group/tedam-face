@@ -110,21 +110,6 @@
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-charts</artifactId>
-            <version>4.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-board</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-board-precompiled</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
             <artifactId>webcomponents-helper</artifactId>
             <version>0.2.0</version>
         </dependency>
@@ -217,7 +202,6 @@
                 <configuration>
                     <extraJvmArgs>-Xmx2G</extraJvmArgs>
                 </configuration>
-                <!-- this block commentted because of vaadin licence issues on travis
                 <executions>
                     <execution>
                         <goals>
@@ -228,7 +212,6 @@
                         </goals>
                     </execution>
                 </executions>
-                 -->
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
