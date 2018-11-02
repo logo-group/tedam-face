@@ -17,10 +17,18 @@
 
 package com.lbs.tedam.ui.components.grid;
 
-import com.lbs.tedam.util.EnumsV2.*;
-
 import java.util.Arrays;
 import java.util.List;
+
+import com.lbs.tedam.util.EnumsV2.ClientStatus;
+import com.lbs.tedam.util.EnumsV2.CommandStatus;
+import com.lbs.tedam.util.EnumsV2.ExecutionStatus;
+import com.lbs.tedam.util.EnumsV2.JobStatus;
+import com.lbs.tedam.util.EnumsV2.JobType;
+import com.lbs.tedam.util.EnumsV2.TedamUserFavoriteType;
+import com.lbs.tedam.util.EnumsV2.TedamUserRole;
+import com.lbs.tedam.util.EnumsV2.TestRunType;
+import com.lbs.tedam.util.EnumsV2.TestStepType;
 
 /**
  * All grid columns must be implemented in this class.
@@ -179,7 +187,16 @@ public class GridColumns {
         CREATED_USER_NOT_HIDDEN("createdUser", "column.createduser", DataType.TEXT, null, false, false, true), //
         CREATED_DATE("dateCreated", "column.createddate", DataType.DATE_TIME, null, false, true, true), //
         UPDATED_USER("updatedUser", "column.updateduser", DataType.TEXT, null, false, true, true), //
-        UPDATED_DATE("dateUpdated", "column.updateddate", DataType.DATE_TIME, null, false, true, true);//
+		UPDATED_DATE("dateUpdated", "column.updateddate", DataType.DATE_TIME, null, false, true, true), //
+
+		/**
+		 * NOTIFICATIONS COLUMNS
+		 */
+		NOTIFICATION_GROUP_NAME("groupName", "column.notificationGroup.groupName", DataType.TEXT, null, true, false,
+				true),
+
+		RECIPIENT_ADDRESS("address", "column.Recipient.address", DataType.TEXT, null, true, false,
+				true);
 
         public static final List<GridColumn> TEST_CASE_TEST_RUN_COLUMNS = Arrays.asList(ID, TEST_RUN_VERSION, TEST_RUN_CLIENT, TEST_RUN_JOB_NAME, TEST_RUN_TEST_SET_NAME, TEST_RUN_TEST_CASE, TEST_RUN_TYPE,
                 TEST_RUN_EXECUTION_STATUS, TEST_RUN_ACTUAL_DURATION, TEST_RUN_START_DATE, TEST_RUN_END_DATE, CREATED_USER, CREATED_DATE, UPDATED_USER, UPDATED_DATE);
@@ -209,6 +226,10 @@ public class GridColumns {
 
         public static final List<GridColumn> JOB_COLUMNS = Arrays.asList(ID, JOB_NAME, JOB_TYPE, JOB_ENVIRONMENT_NAME, JOB_EXECUTION_DURATION, JOB_LAST_EXECUTOR, JOB_LAST_EXECUTED_START_DATE, JOB_LAST_EXECUTED_END_DATE,
                 JOB_IS_CI, JOB_STATUS, CREATED_USER_NOT_HIDDEN, CREATED_DATE, UPDATED_USER, UPDATED_DATE);
+
+		public static final List<GridColumn> NOTIFICATION_COLUMNS = Arrays.asList(ID, NOTIFICATION_GROUP_NAME);
+
+		public static final List<GridColumn> RECIPIENT_COLUMNS = Arrays.asList(ID_NOT_SORTABLE, RECIPIENT_ADDRESS);
 
         public static final List<GridColumn> JOB_PARAMETER_VALUE_COLUMNS = Arrays.asList(ID, JOB_PARAMETER_VALUE_NAME, CREATED_USER, CREATED_DATE, UPDATED_USER, UPDATED_DATE);
 

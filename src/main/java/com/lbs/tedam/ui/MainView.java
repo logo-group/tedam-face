@@ -17,6 +17,13 @@
 
 package com.lbs.tedam.ui;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.TedamUserService;
 import com.lbs.tedam.exception.localized.LocalizedException;
@@ -32,6 +39,7 @@ import com.lbs.tedam.ui.view.environment.EnvironmentGridView;
 import com.lbs.tedam.ui.view.job.JobGridView;
 import com.lbs.tedam.ui.view.jobmanager.TedamManagerView;
 import com.lbs.tedam.ui.view.jobparameter.JobParameterGridView;
+import com.lbs.tedam.ui.view.notification.NotificationGridView;
 import com.lbs.tedam.ui.view.project.ProjectGridView;
 import com.lbs.tedam.ui.view.settings.SettingsView;
 import com.lbs.tedam.ui.view.singlecommand.SingleCommandGridView;
@@ -51,11 +59,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The main view containing the menu and the content area where actual views are shown.
@@ -84,6 +87,7 @@ public class MainView extends HorizontalLayout implements ViewDisplay, TedamLoca
     private TedamButton testsets;
     private TedamButton jobs;
     private TedamButton settings;
+	private TedamButton notifications;
     private TedamButton draftCommands;
     private TedamButton singleCommands;
     private TedamButton userSettings;
@@ -114,6 +118,7 @@ public class MainView extends HorizontalLayout implements ViewDisplay, TedamLoca
         attachNavigation(singleCommands, SingleCommandGridView.class, "");
         attachNavigation(clients, ClientGridView.class, "");
         attachNavigation(settings, SettingsView.class, "");
+		attachNavigation(notifications, NotificationGridView.class, "");
 
     }
 
@@ -230,11 +235,15 @@ public class MainView extends HorizontalLayout implements ViewDisplay, TedamLoca
         userSettings = new TedamButton("view.mainview.usersettingsview", VaadinIcons.USER);
         userSettings.addStyleName(ValoTheme.BUTTON_BORDERLESS);
 
+		notifications = new TedamButton("view.mainview.notifications", VaadinIcons.MEGAFONE);
+		notifications.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+
         logout = new TedamButton("view.mainview.logout", VaadinIcons.EXIT);
         logout.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         logout.addClickListener(e -> logout());
 
-        menu.addComponents(userLabel, userSettings, users, projects, settings, logout, scenarioLabel, testsets, testcases, jobRunnerLabel, singleCommands, draftCommands,
+		menu.addComponents(userLabel, userSettings, users, projects, settings, notifications, logout, scenarioLabel,
+				testsets, testcases, jobRunnerLabel, singleCommands, draftCommands,
                 jobparameters, environment, clients, jobs, jobManager);
         return menu;
     }

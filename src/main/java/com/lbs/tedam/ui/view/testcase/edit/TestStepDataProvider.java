@@ -17,6 +17,10 @@
 
 package com.lbs.tedam.ui.view.testcase.edit;
 
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.annotation.PrototypeScope;
+
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.generator.steptype.Generator;
 import com.lbs.tedam.generator.steptype.GeneratorFactory;
@@ -24,9 +28,6 @@ import com.lbs.tedam.model.TestCase;
 import com.lbs.tedam.model.TestStep;
 import com.lbs.tedam.ui.view.AbstractDataProvider;
 import com.vaadin.spring.annotation.SpringComponent;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.spring.annotation.PrototypeScope;
 
 @SpringComponent
 @PrototypeScope
@@ -40,17 +41,17 @@ public class TestStepDataProvider extends AbstractDataProvider<TestStep> {
     }
 
     public void provideTestSteps(TestCase testCase) throws LocalizedException {
-        for (TestStep testStep : testCase.getTestSteps()) {
-            if (testStep.getType() == null || testStep.getParameter() == null) {
-                continue;
-            }
-            // TODO as if it were meaningless
-            Generator generator = GeneratorFactory.getGenerator(testStep.getType(), beanFactory);
-            if (generator != null) {
-                generator.degenerate(testStep.getParameter());
-                testStep.setGenerator(generator);
-            }
-        }
+		for (TestStep testStep : testCase.getTestSteps()) {
+			if (testStep.getType() == null || testStep.getParameter() == null) {
+				continue;
+			}
+			// TODO as if it were meaningless
+			Generator generator = GeneratorFactory.getGenerator(testStep.getType(), beanFactory);
+			if (generator != null) {
+				generator.degenerate(testStep.getParameter());
+				testStep.setGenerator(generator);
+			}
+		}
         buildListDataProvider(testCase.getTestSteps());
     }
 }

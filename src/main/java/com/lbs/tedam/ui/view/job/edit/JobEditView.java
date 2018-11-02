@@ -17,6 +17,14 @@
 
 package com.lbs.tedam.ui.view.job.edit;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.lbs.tedam.data.service.JobService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.Client;
@@ -27,6 +35,7 @@ import com.lbs.tedam.ui.components.basic.TedamButton;
 import com.lbs.tedam.ui.components.basic.TedamCheckBox;
 import com.lbs.tedam.ui.components.basic.TedamDateTimeField;
 import com.lbs.tedam.ui.components.basic.TedamTextField;
+import com.lbs.tedam.ui.components.combobox.NotificationGroupComboBox;
 import com.lbs.tedam.ui.components.combobox.TedamEnvironmentComboBox;
 import com.lbs.tedam.ui.components.combobox.TedamJobTypeComboBox;
 import com.lbs.tedam.ui.components.grid.GridColumns;
@@ -45,12 +54,6 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Grid.SelectionMode;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @SpringView
 public class JobEditView extends AbstractEditView<Job, JobService, JobEditPresenter, JobEditView> {
@@ -60,6 +63,7 @@ public class JobEditView extends AbstractEditView<Job, JobService, JobEditPresen
     private final WindowTestSet windowTestSet;
     private TedamTextField name;
     private TedamEnvironmentComboBox jobEnvironment;
+	private NotificationGroupComboBox notificationGroup;
     private TedamJobTypeComboBox type;
     private TedamDateTimeField plannedDate;
     private TedamDateTimeField lastExecutedStartDate;
@@ -74,13 +78,15 @@ public class JobEditView extends AbstractEditView<Job, JobService, JobEditPresen
     private TedamFilterGrid<Client> gridClients;
 
     @Autowired
-    public JobEditView(JobEditPresenter presenter, TedamEnvironmentComboBox jobEnvironment, TedamJobTypeComboBox type, WindowSelectClient windowClient,
+	public JobEditView(JobEditPresenter presenter, TedamEnvironmentComboBox jobEnvironment,
+			NotificationGroupComboBox notificationGroup, TedamJobTypeComboBox type, WindowSelectClient windowClient,
                        WindowTestSet windowTestSet) {
         super(presenter);
         this.jobEnvironment = jobEnvironment;
         this.type = type;
         this.windowClient = windowClient;
         this.windowTestSet = windowTestSet;
+		this.notificationGroup = notificationGroup;
     }
 
     @Override
@@ -103,7 +109,8 @@ public class JobEditView extends AbstractEditView<Job, JobService, JobEditPresen
         buildTestSetsGrid();
         buildClientsGrid();
 
-        addSection(getLocaleValue("view.viewedit.section.general"), 0, null, name, plannedDate, jobEnvironment, type, lastExecutedStartDate, lastExecutedEndDate, executionDuration,
+		addSection(getLocaleValue("view.viewedit.section.general"), 0, null, name, plannedDate, jobEnvironment, type,
+				notificationGroup, lastExecutedStartDate, lastExecutedEndDate, executionDuration,
                 ci);
         addSection(getLocaleValue("view.jobedit.section.testsets"), 1, null, addTestSets, removeTestSets, gridJobDetails);
         addSection(getLocaleValue("view.jobedit.section.clients"), 2, null, addClients, removeClients, gridClients);
@@ -242,5 +249,6 @@ public class JobEditView extends AbstractEditView<Job, JobService, JobEditPresen
     public void bindFormFields(BeanValidationBinder<Job> binder) {
         super.bindFormFields(binder);
         binder.forField(jobEnvironment).asRequired().bind("jobEnvironment");
+		binder.forField(notificationGroup).bind("notificationGroup");
     }
 }
