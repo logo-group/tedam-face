@@ -17,43 +17,65 @@
 
 package com.lbs.tedam.ui.view.settings;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.lbs.tedam.data.service.PropertyService;
+import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.Property;
+import com.lbs.tedam.ui.components.basic.TedamTextField;
 import com.lbs.tedam.util.HasLogger;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.Serializable;
-import java.util.List;
 
 @SpringComponent
 @ViewScope
 public class SettingsPresenter implements HasLogger, Serializable {
 
-    /**
-     * long serialVersionUID
-     */
-    private static final long serialVersionUID = 1L;
+	/**
+	 * long serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
 
-    private final SettingsDataProvider settingsDataProvider;
+	private final SettingsDataProvider settingsDataProvider;
 
-    private SettingsView settingsView;
+	private final PropertyService propertyService;
 
-    @Autowired
-    public SettingsPresenter(SettingsDataProvider settingsDataProvider) {
-        this.settingsDataProvider = settingsDataProvider;
-    }
+	private SettingsView settingsView;
 
-    public void build() {
-        List<Property> configPropertyList = (List<Property>) settingsDataProvider.getListDataProvider().getItems();
-        configPropertyList.forEach(property -> {
-            settingsView.buildHorLayout(property);
-        });
-        settingsView.addFooter();
-    }
+	@Autowired
+	public SettingsPresenter(SettingsDataProvider settingsDataProvider, PropertyService propertyService) {
+		this.settingsDataProvider = settingsDataProvider;
+		this.propertyService = propertyService;
+	}
 
-    public void setSettingsView(SettingsView settingsView) {
-        this.settingsView = settingsView;
-    }
+	public void build() {
+		List<Property> configPropertyList = (List<Property>) settingsDataProvider.getListDataProvider().getItems();
+		configPropertyList.forEach(property -> {
+			settingsView.buildHorLayout(property);
+		});
+		settingsView.addFooter();
+	}
+
+	public void updateConfigProperty() throws LocalizedException {
+		List<Property> configPropertyList = (List<Property>) settingsDataProvider.getListDataProvider().getItems();
+		List<Property> updatedList = new ArrayList<>();
+		configPropertyList.forEach(property -> {
+			for (TedamTextField configField : settingsView.getConfigFields()) {
+				if (configField.getId().equals("property_" + property.getParameter())) {
+					property.setValue(configField.getValue());
+					updatedList.add(property);
+				}
+			}
+		});
+		propertyService.save(updatedList);
+	}
+
+	public void setSettingsView(SettingsView settingsView) {
+		this.settingsView = settingsView;
+	}
 
 }
