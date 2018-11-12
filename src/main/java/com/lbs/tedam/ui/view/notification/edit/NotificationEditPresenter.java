@@ -83,6 +83,7 @@ public class NotificationEditPresenter extends
 		refreshView(notificationGroup, mode);
 		recipientDataProvider.provideRecipients(notificationGroup);
 		getView().organizeRecipientsGrid(recipientDataProvider);
+		getTitleForHeader();
 		organizeComponents(getView().getAccordion(), mode == ViewMode.VIEW);
 		setGridEditorAttributes(getView().getGridRecipients(), mode != ViewMode.VIEW);
 	}
@@ -125,6 +126,13 @@ public class NotificationEditPresenter extends
 		recipientsGrid.deselectAll();
 		recipientsGrid.refreshAll();
 		setHasChanges(true);
+	}
+
+	@Override
+	protected void getTitleForHeader() {
+		if (getItem().getGroupName() != null) {
+			getView().setTitle(getView().getTitle() + ": " + getItem().getGroupName());
+		}
 	}
 
 }

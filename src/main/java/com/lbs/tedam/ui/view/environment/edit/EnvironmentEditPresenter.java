@@ -17,8 +17,19 @@
 
 package com.lbs.tedam.ui.view.environment.edit;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+
 import com.lbs.tedam.app.security.SecurityUtils;
-import com.lbs.tedam.data.service.*;
+import com.lbs.tedam.data.service.EnvironmentService;
+import com.lbs.tedam.data.service.JobParameterService;
+import com.lbs.tedam.data.service.ProjectService;
+import com.lbs.tedam.data.service.PropertyService;
+import com.lbs.tedam.data.service.TedamUserService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.Environment;
 import com.lbs.tedam.model.JobParameter;
@@ -34,12 +45,6 @@ import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-
-import java.util.List;
-import java.util.Map;
 
 @SpringComponent
 @ViewScope
@@ -74,6 +79,7 @@ public class EnvironmentEditPresenter extends AbstractEditPresenter<Environment,
             isAuthorized(environment);
         }
         refreshView(environment, (ViewMode) parameters.get(UIParameter.MODE));
+		getTitleForHeader();
     }
 
     protected List<JobParameter> getActiveJobParameters() throws LocalizedException {
@@ -157,5 +163,12 @@ public class EnvironmentEditPresenter extends AbstractEditPresenter<Environment,
     protected Project getProjectByEntity(Environment entity) {
         return entity.getProject();
     }
+
+	@Override
+	protected void getTitleForHeader() {
+		if (getItem().getName() != null) {
+			getView().setTitle(getView().getTitle() + ": " + getItem().getName());
+		}
+	}
 
 }

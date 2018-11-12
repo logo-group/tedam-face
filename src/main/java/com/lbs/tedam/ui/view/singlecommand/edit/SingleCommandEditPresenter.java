@@ -17,6 +17,12 @@
 
 package com.lbs.tedam.ui.view.singlecommand.edit;
 
+import java.util.Map;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.data.service.SingleCommandService;
@@ -31,11 +37,6 @@ import com.lbs.tedam.ui.view.singlecommand.SingleCommandGridView;
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-
-import java.util.Map;
 
 @SpringComponent
 @ViewScope
@@ -68,11 +69,19 @@ public class SingleCommandEditPresenter extends AbstractEditPresenter<SingleComm
             }
         }
         refreshView(singleCommand, mode);
+		getTitleForHeader();
     }
 
     @Override
     protected Class<? extends View> getGridView() {
         return SingleCommandGridView.class;
     }
+
+	@Override
+	protected void getTitleForHeader() {
+		if (getItem().getName() != null) {
+			getView().setTitle(getView().getTitle() + ": " + getItem().getName());
+		}
+	}
 
 }

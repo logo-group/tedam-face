@@ -17,12 +17,27 @@
 
 package com.lbs.tedam.ui.view.testset.edit;
 
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+import org.vaadin.spring.events.annotation.EventBusListenerMethod;
+
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.data.service.TedamUserService;
 import com.lbs.tedam.data.service.TestSetService;
 import com.lbs.tedam.exception.localized.LocalizedException;
-import com.lbs.tedam.model.*;
+import com.lbs.tedam.model.Project;
+import com.lbs.tedam.model.TestCase;
+import com.lbs.tedam.model.TestCaseTestRun;
+import com.lbs.tedam.model.TestSet;
+import com.lbs.tedam.model.TestSetTestCase;
 import com.lbs.tedam.ui.TedamFaceEvents.TestCaseSelectEvent;
 import com.lbs.tedam.ui.components.grid.TedamFilterGrid;
 import com.lbs.tedam.ui.components.grid.TedamGrid;
@@ -36,15 +51,6 @@ import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.Grid.SelectionMode;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-import org.vaadin.spring.events.annotation.EventBusListenerMethod;
-
-import javax.annotation.PostConstruct;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
 
 ;
 
@@ -94,9 +100,7 @@ public class TestSetEditPresenter extends AbstractEditPresenter<TestSet, TestSet
         testCaseTestRunDataProvider.setTestSet(testSet);
         getView().organizeTestCasesGrid(testCaseDataProvider);
         getView().organizeTestCaseTestRunsGrid(testCaseTestRunDataProvider);
-        if (getItem().getName() != null) {
-            getView().setTitle(getView().getTitle() + ": " + getItem().getName());
-        }
+		getTitleForHeader();
         organizeComponents(getView().getAccordion(), mode == ViewMode.VIEW);
         setGridEditorAttributes(getView().getGridTestCases(), mode != ViewMode.VIEW);
     }
@@ -183,4 +187,12 @@ public class TestSetEditPresenter extends AbstractEditPresenter<TestSet, TestSet
     protected Project getProjectByEntity(TestSet entity) {
         return entity.getProject();
     }
+
+	@Override
+	protected void getTitleForHeader() {
+		if (getItem().getName() != null) {
+			getView().setTitle(getView().getTitle() + ": " + getItem().getName());
+		}
+	}
+
 }

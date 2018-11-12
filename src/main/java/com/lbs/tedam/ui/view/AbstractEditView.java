@@ -17,6 +17,10 @@
 
 package com.lbs.tedam.ui.view;
 
+import java.io.Serializable;
+import java.util.Map;
+import java.util.stream.Stream;
+
 import com.lbs.tedam.data.service.BaseService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.localization.TedamLocalizerWrapper;
@@ -43,11 +47,12 @@ import com.vaadin.navigator.ViewBeforeLeaveEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.ui.*;
-
-import java.io.Serializable;
-import java.util.Map;
-import java.util.stream.Stream;
+import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Base edit form view class.
@@ -295,4 +300,13 @@ public abstract class AbstractEditView<T extends AbstractBaseEntity, S extends B
     protected TedamLabel getLblHeader() {
         return lblHeader;
     }
+
+	public String getTitle() {
+		return getHeader();
+	}
+
+	public void setTitle(String title) {
+		getLblHeader().setValue(title);
+	}
+
 }

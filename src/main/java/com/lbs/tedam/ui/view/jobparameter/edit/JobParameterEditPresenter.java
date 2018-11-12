@@ -17,6 +17,14 @@
 
 package com.lbs.tedam.ui.view.jobparameter.edit;
 
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.JobParameterService;
 import com.lbs.tedam.data.service.PropertyService;
@@ -33,13 +41,6 @@ import com.lbs.tedam.ui.view.jobparameters.jobparametervalue.JobParameterValueDa
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Set;
 
 ;
 
@@ -79,6 +80,7 @@ public class JobParameterEditPresenter extends AbstractEditPresenter<JobParamete
         refreshView(jobParameter, mode);
         jobParameterValueDataProvider.setJobParameter(jobParameter);
         getView().organizeGrid(jobParameterValueDataProvider);
+		getTitleForHeader();
         organizeComponents(getView().getAccordion(), mode == ViewMode.VIEW);
         setGridEditorAttributes(getView().getGridJobParameterValues(), mode != ViewMode.VIEW);
     }
@@ -113,5 +115,12 @@ public class JobParameterEditPresenter extends AbstractEditPresenter<JobParamete
     protected Class<? extends View> getGridView() {
         return JobParameterGridView.class;
     }
+
+	@Override
+	protected void getTitleForHeader() {
+		if (getItem().getName() != null) {
+			getView().setTitle(getView().getTitle() + ": " + getItem().getName());
+		}
+	}
 
 }

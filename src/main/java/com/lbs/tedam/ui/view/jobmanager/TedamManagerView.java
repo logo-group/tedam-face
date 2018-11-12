@@ -17,6 +17,16 @@
 
 package com.lbs.tedam.ui.view.jobmanager;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.localization.TedamLocalizerWrapper;
 import com.lbs.tedam.model.Job;
@@ -43,14 +53,6 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-
-import javax.annotation.PostConstruct;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Map.Entry;
 
 @SpringView
 public class TedamManagerView extends CssLayout implements Serializable, View, HasLogger, TedamLocalizerWrapper {

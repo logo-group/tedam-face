@@ -17,6 +17,15 @@
 
 package com.lbs.tedam.ui.view.testset.edit;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.TestSetService;
 import com.lbs.tedam.exception.localized.LocalizedException;
@@ -24,10 +33,18 @@ import com.lbs.tedam.model.TestCaseTestRun;
 import com.lbs.tedam.model.TestSet;
 import com.lbs.tedam.model.TestSetTestCase;
 import com.lbs.tedam.ui.components.CustomExceptions.TedamWindowNotAbleToOpenException;
-import com.lbs.tedam.ui.components.basic.*;
+import com.lbs.tedam.ui.components.basic.TedamButton;
+import com.lbs.tedam.ui.components.basic.TedamDateTimeField;
+import com.lbs.tedam.ui.components.basic.TedamPopUpView;
+import com.lbs.tedam.ui.components.basic.TedamTextArea;
+import com.lbs.tedam.ui.components.basic.TedamTextField;
 import com.lbs.tedam.ui.components.combobox.TedamTestSetStatusComboBox;
-import com.lbs.tedam.ui.components.grid.*;
+import com.lbs.tedam.ui.components.grid.GridColumns;
 import com.lbs.tedam.ui.components.grid.GridColumns.GridColumn;
+import com.lbs.tedam.ui.components.grid.GridFilterValue;
+import com.lbs.tedam.ui.components.grid.RUDOperations;
+import com.lbs.tedam.ui.components.grid.TedamFilterGrid;
+import com.lbs.tedam.ui.components.grid.TedamGridConfig;
 import com.lbs.tedam.ui.components.layout.TedamVerticalLayout;
 import com.lbs.tedam.ui.components.window.testcase.WindowTestCase;
 import com.lbs.tedam.ui.components.window.testrun.WindowTestStepTestRun;
@@ -49,13 +66,6 @@ import com.vaadin.ui.Grid.ItemClick;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.components.grid.ItemClickListener;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 @SpringView
 public class TestSetEditView extends AbstractEditView<TestSet, TestSetService, TestSetEditPresenter, TestSetEditView> {
@@ -312,14 +322,6 @@ public class TestSetEditView extends AbstractEditView<TestSet, TestSetService, T
         TedamButton showExecutionResultButton = buildShowExecutionResultButton(idValue);
         showExecutionResultButton.addClickListener(event -> executionResultPopUp.setPopupVisible(true));
         return Arrays.asList(executionResultPopUp, showExecutionResultButton);
-    }
-
-    public String getTitle() {
-        return getHeader();
-    }
-
-    public void setTitle(String title) {
-        getLblHeader().setValue(title);
     }
 
 }

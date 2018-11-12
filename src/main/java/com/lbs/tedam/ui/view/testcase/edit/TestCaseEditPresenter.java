@@ -145,9 +145,7 @@ public class TestCaseEditPresenter
 		getView().organizeLookUpsGrid(lookUpDataProvider);
 		getView().organizeTestCaseTestRunsGrid(testCaseTestRunDataProvider);
 		getView().organizeUploadedFilesGrid(uploadedFilesDataProvider);
-		if (getItem().getName() != null) {
-			getView().setTitle(getView().getTitle() + ": " + getItem().getName());
-		}
+		getTitleForHeader();
 		// TODO canberk the bottom part review, they are not presenter
 		// should be view
 		organizeComponents(getView().getAccordion(), mode == ViewMode.VIEW);
@@ -611,6 +609,13 @@ public class TestCaseEditPresenter
 	@Override
 	protected Project getProjectByEntity(TestCase entity) {
 		return entity.getProject();
+	}
+
+	@Override
+	protected void getTitleForHeader() {
+		if (getItem().getName() != null) {
+			getView().setTitle(getView().getTitle() + ": " + getItem().getName());
+		}
 	}
 
 }

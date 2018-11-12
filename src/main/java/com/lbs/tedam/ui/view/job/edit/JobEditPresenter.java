@@ -17,12 +17,29 @@
 
 package com.lbs.tedam.ui.view.job.edit;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+import org.vaadin.spring.events.annotation.EventBusListenerMethod;
+
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.JobService;
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.data.service.TedamUserService;
 import com.lbs.tedam.exception.localized.LocalizedException;
-import com.lbs.tedam.model.*;
+import com.lbs.tedam.model.Client;
+import com.lbs.tedam.model.Job;
+import com.lbs.tedam.model.JobDetail;
+import com.lbs.tedam.model.Project;
+import com.lbs.tedam.model.TestSet;
 import com.lbs.tedam.ui.TedamFaceEvents.ClientSelectEvent;
 import com.lbs.tedam.ui.TedamFaceEvents.TestSetEvent;
 import com.lbs.tedam.ui.navigation.NavigationManager;
@@ -34,17 +51,6 @@ import com.lbs.tedam.ui.view.job.JobGridView;
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-import org.vaadin.spring.events.annotation.EventBusListenerMethod;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @SpringComponent
 @ViewScope
@@ -88,7 +94,7 @@ public class JobEditPresenter extends AbstractEditPresenter<Job, JobService, Job
         testSetDataProvider.provideTestSets(job);
         getView().organizeClientsGrid(clientDataProvider);
         getView().organizeTestSetsGrid(testSetDataProvider);
-
+		getTitleForHeader();
         organizeComponents(getView().getAccordion(), mode == ViewMode.VIEW);
         setGridEditorAttributes(getView().getGridJobDetails(), mode != ViewMode.VIEW);
     }
@@ -187,5 +193,12 @@ public class JobEditPresenter extends AbstractEditPresenter<Job, JobService, Job
     protected Project getProjectByEntity(Job entity) {
         return entity.getProject();
     }
+
+	@Override
+	protected void getTitleForHeader() {
+		if (getItem().getName() != null) {
+			getView().setTitle(getView().getTitle() + ": " + getItem().getName());
+		}
+	}
 
 }

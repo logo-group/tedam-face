@@ -17,6 +17,12 @@
 
 package com.lbs.tedam.ui.view.definedcommand.edit;
 
+import java.util.Map;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.DraftCommandService;
 import com.lbs.tedam.data.service.PropertyService;
@@ -32,11 +38,6 @@ import com.lbs.tedam.ui.view.jobparameter.JobParametersDataProvider;
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-
-import java.util.Map;
 
 @SpringComponent
 @ViewScope
@@ -73,6 +74,7 @@ public class DraftCommandEditPresenter extends AbstractEditPresenter<DraftComman
         }
         refreshView(draftCommand, mode);
         getView().getListJobParameters().setItems(jobParametersDataProvider.getListDataProvider().getItems());
+		getTitleForHeader();
         organizeComponents(getView().getAccordion(), mode == ViewMode.VIEW);
     }
 
@@ -80,5 +82,12 @@ public class DraftCommandEditPresenter extends AbstractEditPresenter<DraftComman
     protected Class<? extends View> getGridView() {
         return DraftCommandGridView.class;
     }
+
+	@Override
+	protected void getTitleForHeader() {
+		if (getItem().getName() != null) {
+			getView().setTitle(getView().getTitle() + ": " + getItem().getName());
+		}
+	}
 
 }

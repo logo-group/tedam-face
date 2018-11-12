@@ -17,6 +17,17 @@
 
 package com.lbs.tedam.ui.view.user.edit;
 
+import java.util.ArrayList;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+import org.vaadin.spring.events.annotation.EventBusListenerMethod;
+
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.ProjectService;
 import com.lbs.tedam.data.service.PropertyService;
@@ -34,15 +45,6 @@ import com.lbs.tedam.ui.view.user.UserGridView;
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-import org.vaadin.spring.events.annotation.EventBusListenerMethod;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Map;
 
 @SpringComponent
 @ViewScope
@@ -79,6 +81,7 @@ public class UserEditPresenter extends AbstractEditPresenter<TedamUser, TedamUse
         refreshView(tedamUser, (ViewMode) parameters.get(UIParameter.MODE));
         userProjectDataProvider.setTedamUser(tedamUser);
         getView().organizeProjectsGrid(userProjectDataProvider);
+		getTitleForHeader();
         organizeComponents(getView().getAccordion(), (ViewMode) parameters.get(UIParameter.MODE) == ViewMode.VIEW);
     }
 
@@ -116,5 +119,12 @@ public class UserEditPresenter extends AbstractEditPresenter<TedamUser, TedamUse
     protected Class<? extends View> getGridView() {
         return UserGridView.class;
     }
+
+	@Override
+	protected void getTitleForHeader() {
+		if (getItem().getUserName() != null) {
+			getView().setTitle(getView().getTitle() + ": " + getItem().getUserName());
+		}
+	}
 
 }

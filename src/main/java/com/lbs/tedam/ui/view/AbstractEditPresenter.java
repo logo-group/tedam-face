@@ -17,6 +17,18 @@
 
 package com.lbs.tedam.ui.view;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.BaseService;
 import com.lbs.tedam.data.service.PropertyService;
@@ -27,7 +39,12 @@ import com.lbs.tedam.model.AbstractBaseEntity;
 import com.lbs.tedam.model.Project;
 import com.lbs.tedam.model.TedamUser;
 import com.lbs.tedam.ui.components.ConfirmPopup;
-import com.lbs.tedam.ui.components.basic.*;
+import com.lbs.tedam.ui.components.basic.TedamButton;
+import com.lbs.tedam.ui.components.basic.TedamDateField;
+import com.lbs.tedam.ui.components.basic.TedamDateTimeField;
+import com.lbs.tedam.ui.components.basic.TedamMenuBar;
+import com.lbs.tedam.ui.components.basic.TedamPasswordField;
+import com.lbs.tedam.ui.components.basic.TedamTextField;
 import com.lbs.tedam.ui.components.combobox.TedamComboBox;
 import com.lbs.tedam.ui.components.grid.TedamGrid;
 import com.lbs.tedam.ui.navigation.NavigationManager;
@@ -41,21 +58,16 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewBeforeLeaveEvent;
 import com.vaadin.navigator.ViewLeaveAction;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Component.Focusable;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.HasComponents;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Upload;
+import com.vaadin.ui.VerticalLayout;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.MultiFileUpload;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public abstract class AbstractEditPresenter<T extends AbstractBaseEntity, S extends BaseService<T, Integer>, P extends AbstractEditPresenter<T, S, P, V>, V extends AbstractEditView<T, S, P, V>>
         implements Serializable, HasLogger, TedamLocalizerWrapper {
@@ -368,8 +380,10 @@ public abstract class AbstractEditPresenter<T extends AbstractBaseEntity, S exte
         return authorized;
     }
 
-
     protected Project getProjectByEntity(T entity) {
         return null;
     }
+
+	protected void getTitleForHeader() {
+	}
 }
