@@ -309,4 +309,14 @@ public abstract class AbstractEditView<T extends AbstractBaseEntity, S extends B
 		getLblHeader().setValue(title);
 	}
 
+	public void showSuccessfulSave() {
+		TedamNotification.showNotification(getLocaleValue("view.abstractedit.messages.SuccessfulSave"),
+				NotifyType.SUCCESS);
+	}
+
+	public void showSuccessfulUpdate() {
+		TedamNotification.showNotification(getLocaleValue("view.abstractedit.messages.SuccessfulUpdate"),
+				NotifyType.SUCCESS);
+	}
+
 }

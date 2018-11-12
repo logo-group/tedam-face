@@ -234,6 +234,7 @@ public abstract class AbstractEditPresenter<T extends AbstractBaseEntity, S exte
                     // Navigate to edit view so URL is updated correctly
                     getNavigationManager().updateViewParameter("" + item.getId());
                     enterView(TedamStatic.getUIParameterMap(item.getId(), ViewMode.VIEW));
+					getView().showSuccessfulSave();
                 }
             } else if (getView().getViewMode() == ViewMode.EDIT) {
                 item.setDateUpdated(LocalDateTime.now());
@@ -242,6 +243,7 @@ public abstract class AbstractEditPresenter<T extends AbstractBaseEntity, S exte
                 if (item != null) {
                     enterView(TedamStatic.getUIParameterMap(item.getId(), ViewMode.VIEW));
                 }
+				getView().showSuccessfulUpdate();
             } else if (getView().getViewMode().equals(ViewMode.VIEW)) {
                 enterView(TedamStatic.getUIParameterMap(item.getId(), ViewMode.EDIT));
             }
