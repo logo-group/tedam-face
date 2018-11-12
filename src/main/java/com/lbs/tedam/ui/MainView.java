@@ -158,7 +158,7 @@ public class MainView extends HorizontalLayout implements ViewDisplay, TedamLoca
         menuButton.setStyleName("menu borderless");
         menuButton.setWidthUndefined();
         navigation.setWidthUndefined();
-        navigation.addComponents(buildHeader(), buildVersion(), menuButton, buildMenu());
+		navigation.addComponents(buildHeader(), buildVersion(), buildCurrentProject(), menuButton, buildMenu());
 
         return navigation;
     }
@@ -179,6 +179,16 @@ public class MainView extends HorizontalLayout implements ViewDisplay, TedamLoca
         version.setId("tedam.version");
         return version;
     }
+
+	private Component buildCurrentProject() {
+		TedamLabel currentProject = new TedamLabel();
+		currentProject.addStyleName("logo");
+		currentProject.setWidth("100%");
+		currentProject.setValue(
+				getLocaleValue("view.mainview.label.currentproject") + SecurityUtils.getUserSessionProject().getName());
+		currentProject.setId("tedam.currentProject");
+		return currentProject;
+	}
 
     private Component buildMenu() throws LocalizedException {
         menu = new TedamCssLayout();
