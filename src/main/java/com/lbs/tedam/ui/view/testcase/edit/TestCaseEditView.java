@@ -577,16 +577,16 @@ public class TestCaseEditView
 
             @Override
             public void onViewSelected(TestStep testStep) {
-                getEditor().editRow(getRowIndex(testStep));
+				try {
+					getPresenter().prepareTestStepTypeWindow(testStep, ViewMode.EDIT);
+				} catch (LocalizedException e) {
+					logError(e);
+				}
             }
 
             @Override
             public void onEditSelected(TestStep testStep) {
-                try {
-                    getPresenter().prepareTestStepTypeWindow(testStep, ViewMode.EDIT);
-                } catch (LocalizedException e) {
-                    logError(e);
-                }
+				getEditor().editRow(getRowIndex(testStep));
             }
         };
         gridTestSteps.getColumn(GridColumn.TEST_STEP_DESCRIPTION.getColumnName())
