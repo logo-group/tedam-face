@@ -20,6 +20,15 @@
  */
 package com.lbs.tedam.ui.components.window.testrun;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.annotation.PrototypeScope;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.TestCaseTestRun;
@@ -41,14 +50,6 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.UI;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.spring.annotation.PrototypeScope;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Ahmet.Izgi
@@ -137,7 +138,7 @@ public class WindowTestStepTestRun extends TedamWindow {
 
     @Override
     protected String getHeader() {
-        return getLocaleValue("window.teststeptestrun.header");
+		return "";
     }
 
     @Override
@@ -148,6 +149,7 @@ public class WindowTestStepTestRun extends TedamWindow {
         setModal(true);
         focus();
         initWindow();
+		setCaption(getLocaleValue("window.teststeptestrun.header") + " - " + testCaseTestRun.getTestCaseName());
     }
 
     @Override
