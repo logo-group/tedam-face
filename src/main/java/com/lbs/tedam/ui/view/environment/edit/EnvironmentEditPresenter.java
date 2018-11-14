@@ -68,7 +68,13 @@ public class EnvironmentEditPresenter extends AbstractEditPresenter<Environment,
     protected void enterView(Map<UIParameter, Object> parameters) throws LocalizedException {
         Environment environment;
         if ((Integer) parameters.get(UIParameter.ID) == 0) {
-            environment = new Environment();
+			Integer copiedEntityId = (Integer) parameters.get(UIParameter.ENVIRONMENT);
+			if (copiedEntityId != null && copiedEntityId.compareTo(Integer.valueOf(0)) > 0) {
+				environment = getService().getById(copiedEntityId);
+				environment = environment.cloneEnvironment();
+			} else {
+				environment = new Environment();
+			}
             environment.setProject(SecurityUtils.getUserSessionProject());
         } else {
             environment = getService().getById((Integer) parameters.get(UIParameter.ID));

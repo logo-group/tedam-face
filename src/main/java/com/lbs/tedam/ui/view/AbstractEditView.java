@@ -111,6 +111,9 @@ public abstract class AbstractEditView<T extends AbstractBaseEntity, S extends B
                 case FOLDER:
                     uiParameterMap.put(UIParameter.FOLDER, Integer.valueOf(uiParameters[1]));
                     break;
+			case ENVIRONMENT:
+				uiParameterMap.put(UIParameter.ENVIRONMENT, Integer.valueOf(uiParameters[1]));
+				break;
                 default:
                     break;
             }

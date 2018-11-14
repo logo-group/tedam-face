@@ -40,7 +40,8 @@ public class Enums {
         TEDAM_FOLDER,
         FOLDER,
         FOLDER_TYPE,
-        CREATED_USER;
+		CREATED_USER,
+		ENVIRONMENT;
     }
 
     public enum WindowSize {

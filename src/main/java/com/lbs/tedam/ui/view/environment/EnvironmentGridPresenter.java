@@ -17,20 +17,25 @@
 
 package com.lbs.tedam.ui.view.environment;
 
-import com.lbs.tedam.data.service.EnvironmentService;
-import com.lbs.tedam.data.service.PropertyService;
-import com.lbs.tedam.data.service.TedamUserService;
-import com.lbs.tedam.model.Environment;
-import com.lbs.tedam.ui.navigation.NavigationManager;
-import com.lbs.tedam.ui.util.Enums.UIParameter;
-import com.lbs.tedam.ui.view.AbstractGridPresenter;
-import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.ViewScope;
+import java.util.Map;
+import java.util.Set;
+
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus.ViewEventBus;
 
-import java.util.Map;
+import com.lbs.tedam.data.service.EnvironmentService;
+import com.lbs.tedam.data.service.PropertyService;
+import com.lbs.tedam.data.service.TedamUserService;
+import com.lbs.tedam.exception.localized.LocalizedException;
+import com.lbs.tedam.model.Environment;
+import com.lbs.tedam.ui.navigation.NavigationManager;
+import com.lbs.tedam.ui.util.Enums.UIParameter;
+import com.lbs.tedam.ui.view.AbstractGridPresenter;
+import com.lbs.tedam.ui.view.environment.edit.EnvironmentEditView;
+import com.lbs.tedam.util.Constants;
+import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.ViewScope;
 
 @SpringComponent
 @ViewScope
@@ -50,5 +55,11 @@ public class EnvironmentGridPresenter extends AbstractGridPresenter<Environment,
     @Override
     protected void enterView(Map<UIParameter, Object> parameters) {
     }
+
+	public void copyEnvironment(Set<Environment> environmentList) throws LocalizedException {
+			getNavigationManager().navigateTo(EnvironmentEditView.class, "new" + "?"
+				+ UIParameter.ENVIRONMENT.toString().toLowerCase() + Constants.EQUAL
+				+ environmentList.iterator().next().getId());
+	}
 
 }

@@ -17,22 +17,31 @@
 
 package com.lbs.tedam.ui.view.environment;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.lbs.tedam.data.service.EnvironmentService;
+import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.Environment;
+import com.lbs.tedam.ui.components.basic.TedamButton;
 import com.lbs.tedam.ui.components.grid.GridColumns;
 import com.lbs.tedam.ui.components.grid.GridColumns.GridColumn;
 import com.lbs.tedam.ui.components.grid.RUDOperations;
 import com.lbs.tedam.ui.components.grid.TedamGridConfig;
+import com.lbs.tedam.ui.util.TedamNotification;
+import com.lbs.tedam.ui.util.TedamNotification.NotifyType;
 import com.lbs.tedam.ui.view.AbstractGridView;
 import com.lbs.tedam.ui.view.environment.edit.EnvironmentEditView;
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringView
 public class EnvironmentGridView extends AbstractGridView<Environment, EnvironmentService, EnvironmentGridPresenter, EnvironmentGridView> {
@@ -70,6 +79,7 @@ public class EnvironmentGridView extends AbstractGridView<Environment, Environme
     private void init() {
         getPresenter().setView(this);
         setHeader(getLocaleValue("view.environmentgrid.header"));
+		getTopBarLayout().addComponents(buildCopyButton());
     }
 
     @Override
@@ -86,5 +96,32 @@ public class EnvironmentGridView extends AbstractGridView<Environment, Environme
     protected Class<? extends View> getEditView() {
         return EnvironmentEditView.class;
     }
+
+	private Component buildCopyButton() {
+		TedamButton btnCopyEnvironment = new TedamButton("general.button.copy");
+		btnCopyEnvironment.addStyleName("primary");
+		btnCopyEnvironment.setWidthUndefined();
+		btnCopyEnvironment.addClickListener(new ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				if (getGrid().getSelectedItems().size() != 1) {
+					TedamNotification.showNotification(
+							getLocaleValue("view.environmentedit.messages.selectOneEnvironment"),
+							NotifyType.ERROR);
+					return;
+				}
+				try {
+					getPresenter().copyEnvironment(getGrid().getSelectedItems());
+				} catch (LocalizedException e) {
+					logError(e);
+				}
+				getGrid().deselectAll();
+			}
+		});
+		return btnCopyEnvironment;
+	}
 
 }
