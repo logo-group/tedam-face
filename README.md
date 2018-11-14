@@ -11,13 +11,13 @@
 [sonar-dublicated-lines]: https://sonarcloud.io/api/project_badges/measure?project=com.lbs.tedam%3ATEDAMFaceV2&metric=duplicated_lines_density
 
 
-## Creation of test scenarios
+## Creation of Test Scenarios
 
 The TEDAM automation process starts with the creation of test scenarios in the TedamFace interface. 
 When creating the test scenario, it is critical that the scenario steps are atomic.
 When writing a test scenario, it is important  that a single mouse movement corresponds to a single scenario step.
 
-## Associate snapshot and test scenarios
+## Associate Snapshot and Test Scenarios
 
 Select the snapshot files related to the test scenario and upload to the system. Associate the test scenario steps with the related snapshot file. In this way, the user can continue the process by selecting the components to be interacted through the interface connected to the test step.<br>
 
@@ -30,15 +30,15 @@ Currently available test step types;<br>
 **DoubleClick:** In snapshot file contains a list of double clickable components and selected which component the user will double click.<br>
 **Wait:** Provides to wait otomation according to entered parameter.<br>
 
-## Creation of test sets
+## Creation of Test Sets
 
 The user can combine test scenarios with TestSet in small meaningful groups.<br>
 For example, when ordering, first of all, the product to be ordered may need to be create with automation in the system.<br>
 In this case, it can be ensured that the product creation and ordering scenarios can be combined in a testset for successive operation.<br> 
 
 ## Creation of Job
-Job is the component where the test sets are classified and the clients to which they will run added
-When a job is created; it need following components: Test Sets which will be executed, Agents which run jobs , Environment which job runs on it
+Job is the component where the test sets are classified and the clients to which they will run added.
+When a job is created; it need following components: Test Sets which will be executed, [Agents](https://github.com/logobs/tedam-agent) which run jobs, [Environment](https://github.com/logobs/tedam/wiki/Environments) which job runs on it
 
 ## Job Manager
 It is the screen where the active jobs can be started and stopped. Whether jobs run or not are monitored currently.
