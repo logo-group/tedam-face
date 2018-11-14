@@ -11,69 +11,48 @@
 [sonar-dublicated-lines]: https://sonarcloud.io/api/project_badges/measure?project=com.lbs.tedam%3ATEDAMFaceV2&metric=duplicated_lines_density
 
 
-# Running the project
+## Test Scenarios
+This is the screen where the user can add, delete and view the test scenarios.<br>
+Click the + button in order to access the screen to add scenerios.<br>
+Enter the scenerio name and description.<br>
+Use “Add row” button to add test steps.<br>
+By double clicking on the added lines write the Test Steps Description.<br>
+By double ckicking on the added lines select Test scenario Tip such as Button, Form Open, Form Fill, Verify, Delete, Wait ect.<br>
 
-`mvn spring-boot:run`
+## Upload File - Associate
+Select the snapshot files related to the test scenario and upload to the system. Associate the test scenario steps  with the related snapshot file.  The parameter field is filled by selecting the element in the snapshot file according to the test scenario step.
 
-Wait for the application to start
+## Job Parameters
+It is the screen where the parameters required for the operation of a job are defined, modified and deleted.<br>
+The job parameter screen is accessed by clicking the ”+” button.<br>
+Enter the job parameter name.<br>
+Enter the values of the parameter with the Add row button.<br>
+The parameter is saved with the Save button.<br>
 
-Open http://localhost:8080/ to view the application.
+## Environments
+The environments in which test scenarios will run are defined, modified and deleted.<br>
+The environments screen is accessed by clicking the ”+” button.<br>
+Enter the environment name.<br>
+The parameters grid lists the defined parameters for the run of the test scenarios. The parameters to be used in the defined environment are selected.<br>
+The environment is saved with the Save button.<br>
 
-Default credentials are admin@vaadin.com/admin for admin access and
-barista@vaadin.com/barista for normal user access.
+## Clients
+**Test senaryolarının koşacağı istemcinin tanımlandığı, değiştirildiği ve silindiği ekrandır.**
+The client screen is accessed by clicking the “+” button.<br>
+Enter the client name.<br>
+The client is saved with the Save button.<br>
 
-# Running the project as an executable jar
+## Jobs
+It is the screen where the test sets are classified and the clients to which they will run are added.<br>
+The job screen is accessed by clicking the “+” button.<br>
+Enter the job name.<br>
+The environment in which the job runs is selected from the environments defined in the "Environment Select" field.<br>
+The "Test Set Add" button opens the Test sets screen. Select the relevant test sets and click “Okey” button.<br>
+The test sets selected on the relevant job page are listed.<br>
+The "Client Add" button opens the Clients screen. Select the relevant client and click "Okey" button.<br>
+The job is transferred to the Job Manager page with the "Send to Active" button.<br>
 
-The project is configured to automatically make the build artifact runnable using `java -jar`.
-By default you can thus also run the project by executing the war file:
-```
-java -jar target/tedamfacev2-1.0-SNAPSHOT.war
-```
+## Job Manager
+It is the screen where the active jobs can be started and stopped. Whether jobs run or not are monitored currently.
 
-If you want to produce a `jar` file instead of a `war` file, change the packaging type in `pom.xml` to `<packaging>jar</packaging>`.
 
-# Running integration tests
-
-Integration tests are implemented using TestBench. The tests take tens of minutes to run and are therefore included in a separate profile. To run the tests, execute
-
-`mvn verify -Pit`
-
-and make sure you have a valid TestBench license installed.
-
-# Running scalability tests
-
-Scalability tests can be run as follows
-
-1. Configure the number of concurrent users and a suitable ramp up time in the end of the `src/test/scala/*.scala` files, e.g.:
-	```setUp(scn.inject( rampUsers(50) over (60 seconds)) ).protocols(httpProtocol)```
-
-2. If you are not running on localhost, configure the baseUrl in the beginning of the `src/test/scala/*.scala` files, e.g.:
-
-	```val baseUrl = "http://my.server.com"```
-
-3. Make sure the server is running at the given URL. To run the local server, use
-  ```mvn spring-boot:run```
-
-4. Start a test from the command line, e.g.:
-	 ```mvn -Pscalability gatling:execute -Dgatling.simulationClass=com.lbs.tedam.Barista```
-
-5. Test results are stored into target folder, e.g.:
-	```target/gatling/Barista-1487784042461/index.html```
-
-# Developing the project
-
-The project can be imported into the IDE of your choice as a Maven project
-
-The views are created using Vaadin Designer. To edit the views visually,
-you need to install the Vaadin Designer plug-in.
-
-In Eclipse, open Marketplace, search for "vaadin" and install Vaadin
-Designer 2.x
-
-In IntelliJ, go to "Preferences" -> "Plugins" -> "Browse Repositories",
-search for "Vaadin Designer 2" and install "Vaadin Designer"
-
-# License
-A paid Pro or Prime subscription is required for creating a new software project from this starter. After its creation, results can be used, developed and distributed freely, but licenses for the used commercial components are required during development. The starter or its parts cannot be redistributed as a code example or template.
-
-For full terms, see LICENSE
