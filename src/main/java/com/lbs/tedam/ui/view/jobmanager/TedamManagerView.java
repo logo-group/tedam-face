@@ -225,4 +225,9 @@ public class TedamManagerView extends CssLayout implements Serializable, View, H
         NotifyType notifyType = responseString.equals(HttpStatus.OK.getReasonPhrase()) ? NotifyType.SUCCESS : NotifyType.ERROR;
         TedamNotification.showTrayNotification(job.getId() + " - " + job.getName() + " " + job.getStatus(), notifyType);
     }
+
+	public void showJobPlannedDateExpiredMessage() {
+		TedamNotification.showTrayNotification(getExceptionLocaleValue("localized.exception.jobPlannedDateExpired"),
+				NotifyType.ERROR);
+	}
 }

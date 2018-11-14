@@ -39,6 +39,7 @@ import com.lbs.tedam.data.service.JobService;
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.data.service.TedamUserService;
 import com.lbs.tedam.data.service.TestSetService;
+import com.lbs.tedam.exception.localized.JobPlannedDateExpiredException;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.localization.TedamLocalizerWrapper;
 import com.lbs.tedam.model.Client;
@@ -148,6 +149,8 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 			public void startButtonClickOperations(Job job) {
 				try {
 					doStartButtonClickOperations(job);
+				} catch (JobPlannedDateExpiredException e) {
+					tedamManagerView.showJobPlannedDateExpiredMessage();
 				} catch (LocalizedException e) {
 					getLogger().error(e.getMessage(), e);
 				}
@@ -190,6 +193,7 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 	}
 
 	private void doStartButtonClickOperations(Job job) throws LocalizedException {
+		jobService.checkJobPlannedDate(job);
 		job = jobService.saveJobAndJobDetailsStatus(job, JobStatus.QUEUED, CommandStatus.NOT_STARTED,
 				SecurityUtils.getCurrentUser(userService).getTedamUser());
 		String responseString = restTemplate
