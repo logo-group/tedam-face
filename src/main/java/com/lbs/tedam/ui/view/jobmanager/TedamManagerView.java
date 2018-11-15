@@ -57,172 +57,177 @@ import com.vaadin.ui.themes.ValoTheme;
 @SpringView
 public class TedamManagerView extends CssLayout implements Serializable, View, HasLogger, TedamLocalizerWrapper {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private final TedamManagerPresenter tedamManagerPresenter;
-    private final WindowClient windowClient;
+	private final TedamManagerPresenter tedamManagerPresenter;
+	private final WindowClient windowClient;
 
-    private TedamHorizontalLayout topBarLayout;
-    private TedamHorizontalLayout midBarLayout;
+	private TedamHorizontalLayout topBarLayout;
+	private TedamHorizontalLayout midBarLayout;
 
-    @Autowired
-    public TedamManagerView(TedamManagerPresenter tedamManagerPresenter, WindowClient windowClient) {
-        this.tedamManagerPresenter = tedamManagerPresenter;
-        this.windowClient = windowClient;
-    }
+	@Autowired
+	public TedamManagerView(TedamManagerPresenter tedamManagerPresenter, WindowClient windowClient) {
+		this.tedamManagerPresenter = tedamManagerPresenter;
+		this.windowClient = windowClient;
+	}
 
-    @PostConstruct
-    public void init() {
-        tedamManagerPresenter.setTedamManagerView(this);
-        initView();
-        tedamManagerPresenter.build();
-    }
+	@PostConstruct
+	public void init() {
+		tedamManagerPresenter.setTedamManagerView(this);
+		initView();
+		tedamManagerPresenter.build();
+	}
 
-    private void initView() {
-        setResponsive(true);
+	private void initView() {
+		setResponsive(true);
 
-        initTopBarLayout();
-        initMidBarLayout();
-        TedamLabel gridLabel = initGridLabel();
-        TedamButton btnShowClientMap = initButtonShowClientMap();
-        TedamPanel pnlJobStatusButton = initPanelJobStatusButton();
-        TedamPanel pnlJobTypeOwnJobButton = initPanelJobTypeAndOwnJobButton();
+		initTopBarLayout();
+		initMidBarLayout();
+		TedamLabel gridLabel = initGridLabel();
+		TedamButton btnShowClientMap = initButtonShowClientMap();
+		TedamPanel pnlJobStatusButton = initPanelJobStatusButton();
+		TedamPanel pnlJobTypeOwnJobButton = initPanelJobTypeAndOwnJobButton();
 
-        topBarLayout.addComponents(gridLabel, pnlJobStatusButton, btnShowClientMap);
-        midBarLayout.addComponents(pnlJobTypeOwnJobButton);
-        topBarLayout.setExpandRatio(pnlJobStatusButton, 1);
-        addComponents(topBarLayout, midBarLayout);
+		topBarLayout.addComponents(gridLabel, pnlJobStatusButton, btnShowClientMap);
+		midBarLayout.addComponents(pnlJobTypeOwnJobButton);
+		topBarLayout.setExpandRatio(pnlJobStatusButton, 1);
+		addComponents(topBarLayout, midBarLayout);
 
-    }
+	}
 
-    private TedamPanel initPanelJobStatusButton() {
-        TedamPanel pnl = new TedamPanel();
-        TedamHorizontalLayout layout = new TedamHorizontalLayout();
-        pnl.setContent(layout);
-        for (Entry<JobStatus, TedamColor> entry : TedamStatic.getJobStatusColorMap().entrySet()) {
-            TedamCheckBox checkBox = new TedamCheckBox("", "full", true, true);
-            checkBox.addValueChangeListener(new ValueChangeListener<Boolean>() {
+	private TedamPanel initPanelJobStatusButton() {
+		TedamPanel pnl = new TedamPanel();
+		TedamHorizontalLayout layout = new TedamHorizontalLayout();
+		pnl.setContent(layout);
+		for (Entry<JobStatus, TedamColor> entry : TedamStatic.getJobStatusColorMap().entrySet()) {
+			TedamCheckBox checkBox = new TedamCheckBox("", "full", true, true);
+			checkBox.addValueChangeListener(new ValueChangeListener<Boolean>() {
 
-                /** long serialVersionUID */
-                private static final long serialVersionUID = 1L;
+				/** long serialVersionUID */
+				private static final long serialVersionUID = 1L;
 
-                @Override
-                public void valueChange(ValueChangeEvent<Boolean> event) {
-                    if (event.getValue().equals(TedamBoolean.TRUE.getBooleanValue())) {
-                        tedamManagerPresenter.getJobStatusList().add(entry.getKey());
-                    } else {
-                        tedamManagerPresenter.getJobStatusList().remove(entry.getKey());
-                    }
-                    tedamManagerPresenter.build();
-                }
-            });
-            checkBox.setCaption(entry.getKey().toString());
-            checkBox.setStyleName(entry.getValue().toString().toLowerCase());
-            checkBox.setWidthUndefined();
-            layout.setSpacing(true);
-            layout.addComponent(checkBox);
-        }
-        pnl.setSizeUndefined();
-        return pnl;
-    }
+				@Override
+				public void valueChange(ValueChangeEvent<Boolean> event) {
+					if (event.getValue().equals(TedamBoolean.TRUE.getBooleanValue())) {
+						tedamManagerPresenter.getJobStatusList().add(entry.getKey());
+					} else {
+						tedamManagerPresenter.getJobStatusList().remove(entry.getKey());
+					}
+					tedamManagerPresenter.build();
+				}
+			});
+			checkBox.setCaption(entry.getKey().toString());
+			checkBox.setStyleName(entry.getValue().toString().toLowerCase());
+			checkBox.setWidthUndefined();
+			layout.setSpacing(true);
+			layout.addComponent(checkBox);
+		}
+		pnl.setSizeUndefined();
+		return pnl;
+	}
 
-    private TedamPanel initPanelJobTypeAndOwnJobButton() {
-        TedamPanel pnl = new TedamPanel();
-        TedamHorizontalLayout layout = new TedamHorizontalLayout();
-        pnl.setContent(layout);
-        for (JobType jobType : Arrays.asList(JobType.class.getEnumConstants())) {
-            TedamCheckBox checkBox = new TedamCheckBox("", "full", true, true);
-            checkBox.addValueChangeListener(new ValueChangeListener<Boolean>() {
+	private TedamPanel initPanelJobTypeAndOwnJobButton() {
+		TedamPanel pnl = new TedamPanel();
+		TedamHorizontalLayout layout = new TedamHorizontalLayout();
+		pnl.setContent(layout);
+		for (JobType jobType : Arrays.asList(JobType.class.getEnumConstants())) {
+			TedamCheckBox checkBox = new TedamCheckBox("", "full", true, true);
+			checkBox.addValueChangeListener(new ValueChangeListener<Boolean>() {
 
-                /** long serialVersionUID */
-                private static final long serialVersionUID = 1L;
+				/** long serialVersionUID */
+				private static final long serialVersionUID = 1L;
 
-                @Override
-                public void valueChange(ValueChangeEvent<Boolean> event) {
-                    if (event.getValue().equals(TedamBoolean.TRUE.getBooleanValue())) {
-                        tedamManagerPresenter.getJobTypeList().add(jobType);
-                    } else {
-                        tedamManagerPresenter.getJobTypeList().remove(jobType);
-                    }
-                    tedamManagerPresenter.build();
-                }
-            });
-            checkBox.setCaption(jobType.toString());
-            checkBox.setWidthUndefined();
-            layout.setSpacing(true);
-            layout.addComponent(checkBox);
-        }
-        // OWN JOB CHECKBOX
-        TedamCheckBox checkBox = new TedamCheckBox("", "full", true, true);
-        checkBox.addValueChangeListener(new ValueChangeListener<Boolean>() {
+				@Override
+				public void valueChange(ValueChangeEvent<Boolean> event) {
+					if (event.getValue().equals(TedamBoolean.TRUE.getBooleanValue())) {
+						tedamManagerPresenter.getJobTypeList().add(jobType);
+					} else {
+						tedamManagerPresenter.getJobTypeList().remove(jobType);
+					}
+					tedamManagerPresenter.build();
+				}
+			});
+			checkBox.setCaption(jobType.toString());
+			checkBox.setWidthUndefined();
+			layout.setSpacing(true);
+			layout.addComponent(checkBox);
+		}
+		// OWN JOB CHECKBOX
+		TedamCheckBox checkBox = new TedamCheckBox("", "full", true, true);
+		checkBox.addValueChangeListener(new ValueChangeListener<Boolean>() {
 
-            /** long serialVersionUID */
-            private static final long serialVersionUID = 1L;
+			/** long serialVersionUID */
+			private static final long serialVersionUID = 1L;
 
-            @Override
-            public void valueChange(ValueChangeEvent<Boolean> event) {
-                if (event.getValue().equals(TedamBoolean.TRUE.getBooleanValue())) {
-                    tedamManagerPresenter.setAreOnlyOwnJobs(true);
-                } else {
-                    tedamManagerPresenter.setAreOnlyOwnJobs(false);
-                }
-                tedamManagerPresenter.build();
-            }
-        });
-        checkBox.setCaption(getLocaleValue("view.tedammanager.ownjob.checkbox"));
-        checkBox.setWidthUndefined();
-        layout.setSpacing(true);
-        layout.addComponent(checkBox);
-        pnl.setSizeUndefined();
-        return pnl;
-    }
+			@Override
+			public void valueChange(ValueChangeEvent<Boolean> event) {
+				if (event.getValue().equals(TedamBoolean.TRUE.getBooleanValue())) {
+					tedamManagerPresenter.setAreOnlyOwnJobs(true);
+				} else {
+					tedamManagerPresenter.setAreOnlyOwnJobs(false);
+				}
+				tedamManagerPresenter.build();
+			}
+		});
+		checkBox.setCaption(getLocaleValue("view.tedammanager.ownjob.checkbox"));
+		checkBox.setWidthUndefined();
+		layout.setSpacing(true);
+		layout.addComponent(checkBox);
+		pnl.setSizeUndefined();
+		return pnl;
+	}
 
-    private TedamButton initButtonShowClientMap() {
-        TedamButton btnShowClientMap = new TedamButton("view.tedammanager.button.showclientmap");
-        btnShowClientMap.addStyleName("friendly");
-        btnShowClientMap.setWidthUndefined();
-        btnShowClientMap.addClickListener(e -> {
-            try {
-                tedamManagerPresenter.showClientMap();
-            } catch (LocalizedException e1) {
-                getLogger().error(e1.getMessage(), e1);
-            }
-        });
-        return btnShowClientMap;
-    }
+	private TedamButton initButtonShowClientMap() {
+		TedamButton btnShowClientMap = new TedamButton("view.tedammanager.button.showclientmap");
+		btnShowClientMap.addStyleName("friendly");
+		btnShowClientMap.setWidthUndefined();
+		btnShowClientMap.addClickListener(e -> {
+			try {
+				tedamManagerPresenter.showClientMap();
+			} catch (LocalizedException e1) {
+				getLogger().error(e1.getMessage(), e1);
+			}
+		});
+		return btnShowClientMap;
+	}
 
-    public void openWindowClientMap(Map<UIParameter, Object> windowParameters) throws LocalizedException {
-        try {
-            windowClient.open(windowParameters);
-        } catch (TedamWindowNotAbleToOpenException e) {
-            windowClient.close();
-            TedamNotification.showNotification(e.getMessage(), NotifyType.ERROR);
-        }
-    }
+	public void openWindowClientMap(Map<UIParameter, Object> windowParameters) throws LocalizedException {
+		try {
+			windowClient.open(windowParameters);
+		} catch (TedamWindowNotAbleToOpenException e) {
+			windowClient.close();
+			TedamNotification.showNotification(e.getMessage(), NotifyType.ERROR);
+		}
+	}
 
-    private TedamLabel initGridLabel() {
-        TedamLabel gridLabel = new TedamLabel(getLocaleValue("view.tedammanager.label"));
-        gridLabel.setStyleName(ValoTheme.LABEL_H3 + " bold");
-        return gridLabel;
-    }
+	private TedamLabel initGridLabel() {
+		TedamLabel gridLabel = new TedamLabel(getLocaleValue("view.tedammanager.label"));
+		gridLabel.setStyleName(ValoTheme.LABEL_H3 + " bold");
+		return gridLabel;
+	}
 
-    private void initTopBarLayout() {
-        topBarLayout = new TedamHorizontalLayout();
-        topBarLayout.setStyleName("top-bar");
-        topBarLayout.setWidth("100%");
-        topBarLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
-        topBarLayout.setSpacing(true);
-    }
+	private void initTopBarLayout() {
+		topBarLayout = new TedamHorizontalLayout();
+		topBarLayout.setStyleName("top-bar");
+		topBarLayout.setWidth("100%");
+		topBarLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
+		topBarLayout.setSpacing(true);
+	}
 
-    private void initMidBarLayout() {
-        midBarLayout = new TedamHorizontalLayout();
-        midBarLayout.setStyleName("top-bar");
-        midBarLayout.setWidth("100%");
-        midBarLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
-    }
+	private void initMidBarLayout() {
+		midBarLayout = new TedamHorizontalLayout();
+		midBarLayout.setStyleName("top-bar");
+		midBarLayout.setWidth("100%");
+		midBarLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
+	}
 
-    public void showJobMessage(Job job, String responseString) {
-        NotifyType notifyType = responseString.equals(HttpStatus.OK.getReasonPhrase()) ? NotifyType.SUCCESS : NotifyType.ERROR;
-        TedamNotification.showTrayNotification(job.getId() + " - " + job.getName() + " " + job.getStatus(), notifyType);
-    }
+	public void showJobMessage(Job job, String responseString) {
+		NotifyType notifyType = responseString.equals(HttpStatus.OK.getReasonPhrase()) ? NotifyType.SUCCESS
+				: NotifyType.ERROR;
+		TedamNotification.showTrayNotification(job.getId() + " - " + job.getName() + " " + job.getStatus(), notifyType);
+	}
+
+	public void showExceptionMessage(LocalizedException e) {
+		TedamNotification.showTrayNotification(e.getLocalizedMessage(), NotifyType.ERROR);
+	}
 }

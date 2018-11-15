@@ -149,7 +149,7 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 				try {
 					doStartButtonClickOperations(job);
 				} catch (LocalizedException e) {
-					getLogger().error(e.getMessage(), e);
+					tedamManagerView.showExceptionMessage(e);
 				}
 			}
 
@@ -190,6 +190,7 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 	}
 
 	private void doStartButtonClickOperations(Job job) throws LocalizedException {
+		jobService.checkJobBeforeRun(job);
 		job = jobService.saveJobAndJobDetailsStatus(job, JobStatus.QUEUED, CommandStatus.NOT_STARTED,
 				SecurityUtils.getCurrentUser(userService).getTedamUser());
 		String responseString = restTemplate

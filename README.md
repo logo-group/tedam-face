@@ -11,46 +11,32 @@
 [sonar-dublicated-lines]: https://sonarcloud.io/api/project_badges/measure?project=com.lbs.tedam%3ATEDAMFaceV2&metric=duplicated_lines_density
 
 
-## Test Scenarios
-This is the screen where the user can add, delete and view the test scenarios.<br>
-Click the + button in order to access the screen to add scenerios.<br>
-Enter the scenerio name and description.<br>
-Use “Add row” button to add test steps.<br>
-By double clicking on the added lines write the Test Steps Description.<br>
-By double ckicking on the added lines select Test scenario Tip such as Button, Form Open, Form Fill, Verify, Delete, Wait ect.<br>
+## Creation of Test Scenarios
 
-## Upload File - Associate
-Select the snapshot files related to the test scenario and upload to the system. Associate the test scenario steps  with the related snapshot file.  The parameter field is filled by selecting the element in the snapshot file according to the test scenario step.
+The TEDAM automation process starts with the creation of test scenarios in the TedamFace interface. 
+When creating the test scenario, it is critical that the scenario steps are atomic.
+When writing a test scenario, it is important  that a single mouse movement corresponds to a single scenario step.
 
-## Job Parameters
-It is the screen where the parameters required for the operation of a job are defined, modified and deleted.<br>
-The job parameter screen is accessed by clicking the ”+” button.<br>
-Enter the job parameter name.<br>
-Enter the values of the parameter with the Add row button.<br>
-The parameter is saved with the Save button.<br>
+## Associate Snapshot and Test Scenarios
 
-## Environments
-The environments in which test scenarios will run are defined, modified and deleted.<br>
-The environments screen is accessed by clicking the ”+” button.<br>
-Enter the environment name.<br>
-The parameters grid lists the defined parameters for the run of the test scenarios. The parameters to be used in the defined environment are selected.<br>
-The environment is saved with the Save button.<br>
+Select the snapshot files related to the test scenario and upload to the system. Associate the test scenario steps with the related snapshot file. In this way, the user can continue the process by selecting the components to be interacted through the interface connected to the test step.<br>
 
-## Clients
-**Test senaryolarının koşacağı istemcinin tanımlandığı, değiştirildiği ve silindiği ekrandır.**
-The client screen is accessed by clicking the “+” button.<br>
-Enter the client name.<br>
-The client is saved with the Save button.<br>
+Currently available test step types;<br>
+**ButtonClick:** In snapshot file contains a list of clickable components and selected which component the user will click.<br>
+**Formfill:** In snapshot file contains a list of text fillable components and  user value writes the value to the writable component.<br>
+**Verify:** Verifies the data on the screen.<br>
+**DoubleClick:** In snapshot file contains a list of double clickable components and selected which component the user will double click.<br>
+**Wait:** Provides to wait otomation according to entered parameter.<br>
 
-## Jobs
-It is the screen where the test sets are classified and the clients to which they will run are added.<br>
-The job screen is accessed by clicking the “+” button.<br>
-Enter the job name.<br>
-The environment in which the job runs is selected from the environments defined in the "Environment Select" field.<br>
-The "Test Set Add" button opens the Test sets screen. Select the relevant test sets and click “Okey” button.<br>
-The test sets selected on the relevant job page are listed.<br>
-The "Client Add" button opens the Clients screen. Select the relevant client and click "Okey" button.<br>
-The job is transferred to the Job Manager page with the "Send to Active" button.<br>
+## Creation of Test Sets
+
+The user can combine test scenarios with TestSet in small meaningful groups.<br>
+For example, when ordering, first of all, the product to be ordered may need to be create with automation in the system.<br>
+In this case, it can be ensured that the product creation and ordering scenarios can be combined in a testset for successive operation.<br> 
+
+## Creation of Job
+Job is the component where the test sets are classified and the clients to which they will run added.
+When a job is created; it need following components: Test Sets which will be executed, [Agents](https://github.com/logobs/tedam-agent) which run jobs, [Environment](https://github.com/logobs/tedam/wiki/Environments) which job runs on it
 
 ## Job Manager
 It is the screen where the active jobs can be started and stopped. Whether jobs run or not are monitored currently.
