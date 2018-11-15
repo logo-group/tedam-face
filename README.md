@@ -24,9 +24,7 @@ Select the snapshot files related to the test scenario and upload to the system.
 Currently available test step types;<br>
 **ButtonClick:** In snapshot file contains a list of clickable components and selected which component the user will click.<br>
 **Formfill:** In snapshot file contains a list of text fillable components and  user value writes the value to the writable component.<br>
-**Filterfill:** In snapshot file contains a list of filter fillable components and user writes the filter value in the filterable field.<br>
 **Verify:** Verifies the data on the screen.<br>
-**Delete:** Provides to delete of data.<br>
 **DoubleClick:** In snapshot file contains a list of double clickable components and selected which component the user will double click.<br>
 **Wait:** Provides to wait otomation according to entered parameter.<br>
 
