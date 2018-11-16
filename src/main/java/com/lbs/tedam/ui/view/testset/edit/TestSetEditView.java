@@ -324,4 +324,11 @@ public class TestSetEditView extends AbstractEditView<TestSet, TestSetService, T
         return Arrays.asList(executionResultPopUp, showExecutionResultButton);
     }
 
+	@Override
+	protected void collectGrids() {
+		super.collectGrids();
+		getGridList().add(gridTestCaseRun);
+		getGridList().add(gridTestCases);
+	}
+
 }

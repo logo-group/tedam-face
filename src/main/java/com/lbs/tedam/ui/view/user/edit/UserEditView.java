@@ -17,6 +17,15 @@
 
 package com.lbs.tedam.ui.view.user.edit;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+
 import com.lbs.tedam.data.service.TedamUserService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.Project;
@@ -45,13 +54,6 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Secured(TedamUserRole.Constants.ADMIN)
 @SpringView
@@ -139,6 +141,7 @@ public class UserEditView extends AbstractEditView<TedamUser, TedamUserService, 
 
             }
         };
+		gridProjects.setId("UserEditProjectsGrid");
     }
 
     private void confirmDelete(Project project) {
@@ -172,5 +175,11 @@ public class UserEditView extends AbstractEditView<TedamUser, TedamUserService, 
         super.bindFormFields(binder);
         binder.forField(role).asRequired().bind("role");
     }
+
+	@Override
+	protected void collectGrids() {
+		super.collectGrids();
+		getGridList().add(gridProjects);
+	}
 
 }

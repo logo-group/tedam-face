@@ -207,10 +207,12 @@ public class JobEditView extends AbstractEditView<Job, JobService, JobEditPresen
 
     protected void buildTestSetsGrid() {
         gridJobDetails = new TedamFilterGrid<JobDetail>(buildJobDetailGridConfig(), SelectionMode.MULTI);
+		gridJobDetails.setId("JobDetailGrid");
     }
 
     protected void buildClientsGrid() {
         gridClients = new TedamFilterGrid<Client>(buildClientGridConfig(), SelectionMode.MULTI);
+		gridClients.setId("JobClientGrid");
     }
 
     public TedamFilterGrid<JobDetail> getGridJobDetails() {
@@ -251,4 +253,11 @@ public class JobEditView extends AbstractEditView<Job, JobService, JobEditPresen
         binder.forField(jobEnvironment).asRequired().bind("jobEnvironment");
 		binder.forField(notificationGroup).bind("notificationGroup");
     }
+
+	@Override
+	protected void collectGrids() {
+		super.collectGrids();
+		getGridList().add(gridJobDetails);
+		getGridList().add(gridClients);
+	}
 }

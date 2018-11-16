@@ -17,6 +17,13 @@
 
 package com.lbs.tedam.ui.view.jobparameter.edit;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.lbs.tedam.data.service.JobParameterService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.JobParameter;
@@ -39,11 +46,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringView
 public class JobParameterEditView extends AbstractEditView<JobParameter, JobParameterService, JobParameterEditPresenter, JobParameterEditView> {
@@ -141,6 +143,7 @@ public class JobParameterEditView extends AbstractEditView<JobParameter, JobPara
                 getEditor().editRow(getRowIndex(jobParameterValue));
             }
         };
+		gridJobParameterValues.setId("JobParameterValueGrid");
     }
 
     protected void organizeGrid(AbstractDataProvider<JobParameterValue> dataProvider) {
@@ -160,5 +163,11 @@ public class JobParameterEditView extends AbstractEditView<JobParameter, JobPara
     public void showJobParameterValuesEmpty() {
         TedamNotification.showNotification(getLocaleValue("view.jobparameteredit.messages.showJobParameterValuesEmpty"), NotifyType.ERROR);
     }
+
+	@Override
+	protected void collectGrids() {
+		super.collectGrids();
+		getGridList().add(gridJobParameterValues);
+	}
 
 }

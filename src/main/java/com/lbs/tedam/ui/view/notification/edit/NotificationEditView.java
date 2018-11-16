@@ -168,4 +168,9 @@ public class NotificationEditView extends
 		grid.laodFilterValues(filterValues);
 	}
 
+	@Override
+	protected void collectGrids() {
+		super.collectGrids();
+		getGridList().add(gridRecipients);
+	}
 }

@@ -17,10 +17,25 @@
 
 package com.lbs.tedam.ui.components.grid;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.vaadin.gridutil.renderer.BooleanRenderer;
+
 import com.lbs.tedam.localization.TedamLocalizerWrapper;
 import com.lbs.tedam.model.ColumnPreference;
 import com.lbs.tedam.model.GridPreference;
-import com.lbs.tedam.ui.components.basic.*;
+import com.lbs.tedam.ui.components.basic.TedamButton;
+import com.lbs.tedam.ui.components.basic.TedamCheckBox;
+import com.lbs.tedam.ui.components.basic.TedamDateField;
+import com.lbs.tedam.ui.components.basic.TedamDateTimeField;
+import com.lbs.tedam.ui.components.basic.TedamLabel;
+import com.lbs.tedam.ui.components.basic.TedamNumberField;
+import com.lbs.tedam.ui.components.basic.TedamTextArea;
+import com.lbs.tedam.ui.components.basic.TedamTextField;
 import com.lbs.tedam.ui.components.combobox.TedamComboBox;
 import com.lbs.tedam.ui.components.grid.GridColumns.GridColumn;
 import com.lbs.tedam.ui.components.layout.TedamHorizontalLayout;
@@ -39,13 +54,6 @@ import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.components.grid.ItemClickListener;
 import com.vaadin.ui.renderers.LocalDateRenderer;
 import com.vaadin.ui.renderers.LocalDateTimeRenderer;
-import org.vaadin.gridutil.renderer.BooleanRenderer;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Extension of native Vaadin Grid.
@@ -525,6 +533,20 @@ public class TedamGrid<T> extends Grid<T> implements TedamLocalizerWrapper, Data
         return gridPreference;
     }
 
+	public GridPreference saveGridPreferenceByGrid(TedamGrid grid) {
+		if (gridPreference == null) {
+			gridPreference = new GridPreference();
+		}
+		gridPreference.setGridId(grid.getId());
+		for (Column<T, ?> column : getColumns()) {
+			if (column.getId() == null)
+				continue;
+			ColumnPreference columnPreference = createNewColumnPreference(column);
+			gridPreference.getColumnPreferenceList().add(columnPreference);
+		}
+		return gridPreference;
+	}
+
     public GridPreference saveGridPreference(GridPreference gridPreference) {
         for (Column<T, ?> column : getColumns()) {
             if (column.getId() == null) {
@@ -555,23 +577,23 @@ public class TedamGrid<T> extends Grid<T> implements TedamLocalizerWrapper, Data
         return columnPreference;
     }
 
-    public void loadGridPreference(GridPreference gridPreference) {
-        if (gridPreference == null)
-            return;
-        this.gridPreference = gridPreference;
-        List<ColumnPreference> preferenceList = gridPreference.getColumnPreferenceList();
-        for (ColumnPreference preference : preferenceList) {
-            for (Column<T, ?> column : getColumns()) {
-                if (column.getId().equals(preference.getColumnId())) {
-                    column.setHidden(preference.isHidden());
-                    if (preference.getColumnWidth() > 0) {
-                        column.setWidth(preference.getColumnWidth());
-                    }
-                    break;
-                }
-            }
-        }
-    }
+	public void loadGridPreference(GridPreference gridPreference) {
+		if (gridPreference == null)
+			return;
+		this.gridPreference = gridPreference;
+		List<ColumnPreference> preferenceList = gridPreference.getColumnPreferenceList();
+		for (ColumnPreference preference : preferenceList) {
+			for (Column<T, ?> column : getColumns()) {
+				if (column.getId().equals(preference.getColumnId())) {
+					column.setHidden(preference.isHidden());
+					if (preference.getColumnWidth() > 0) {
+						column.setWidth(preference.getColumnWidth());
+					}
+					break;
+				}
+			}
+		}
+	}
 
     public TedamButton getButtonDown() {
         return buttonDown;

@@ -18,6 +18,8 @@
 package com.lbs.tedam.ui.view;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -29,6 +31,7 @@ import com.lbs.tedam.ui.components.basic.TedamButton;
 import com.lbs.tedam.ui.components.basic.TedamDateTimeField;
 import com.lbs.tedam.ui.components.basic.TedamLabel;
 import com.lbs.tedam.ui.components.basic.TedamTextField;
+import com.lbs.tedam.ui.components.grid.TedamGrid;
 import com.lbs.tedam.ui.components.layout.TedamCssLayout;
 import com.lbs.tedam.ui.components.layout.TedamHorizontalLayout;
 import com.lbs.tedam.ui.util.Enums.UIParameter;
@@ -81,6 +84,8 @@ public abstract class AbstractEditView<T extends AbstractBaseEntity, S extends B
 
     private TedamLabel lblHeader;
 
+	private List<TedamGrid<?>> gridList;
+
     public AbstractEditView(P presenter) {
         this.presenter = presenter;
         initComponents();
@@ -88,6 +93,8 @@ public abstract class AbstractEditView<T extends AbstractBaseEntity, S extends B
 
     @Override
     public void enter(ViewChangeEvent event) {
+		collectGrids();
+		getPresenter().laodGridPreference(gridList);
         String parameter = event.getParameters();
         try {
             if (parameter.contains("new")) {
@@ -221,6 +228,7 @@ public abstract class AbstractEditView<T extends AbstractBaseEntity, S extends B
     @Override
     public void beforeLeave(ViewBeforeLeaveEvent event) {
         getPresenter().beforeLeavingView(event);
+		getPresenter().saveGridPreference(gridList);
     }
 
     public TedamButton getCancel() {
@@ -322,4 +330,15 @@ public abstract class AbstractEditView<T extends AbstractBaseEntity, S extends B
 				NotifyType.SUCCESS);
 	}
 
+	public List<TedamGrid<?>> getGridList() {
+		return gridList;
+	}
+
+	public void setGridList(List<TedamGrid<?>> gridList) {
+		this.gridList = gridList;
+	}
+
+	protected void collectGrids() {
+		gridList = new ArrayList<TedamGrid<?>>();
+	}
 }

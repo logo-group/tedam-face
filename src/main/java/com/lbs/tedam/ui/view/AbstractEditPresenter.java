@@ -19,11 +19,13 @@ package com.lbs.tedam.ui.view;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,11 +33,13 @@ import org.vaadin.spring.events.EventBus.ViewEventBus;
 
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.BaseService;
+import com.lbs.tedam.data.service.GridPreferenceService;
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.data.service.TedamUserService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.localization.TedamLocalizerWrapper;
 import com.lbs.tedam.model.AbstractBaseEntity;
+import com.lbs.tedam.model.GridPreference;
 import com.lbs.tedam.model.Project;
 import com.lbs.tedam.model.TedamUser;
 import com.lbs.tedam.ui.components.ConfirmPopup;
@@ -86,6 +90,9 @@ public abstract class AbstractEditPresenter<T extends AbstractBaseEntity, S exte
     private BeanValidationBinder<T> binder;
     private ViewEventBus viewEventBus;
     private boolean hasChanges;
+
+	@Autowired
+	private GridPreferenceService gridPreferenceService;
 
     protected AbstractEditPresenter(ViewEventBus viewEventBus, NavigationManager navigationManager, S service, Class<T> entityType, BeanFactory beanFactory,
                                     TedamUserService userService, PropertyService propertyService) {
@@ -388,4 +395,60 @@ public abstract class AbstractEditPresenter<T extends AbstractBaseEntity, S exte
 
 	protected void getTitleForHeader() {
 	}
+
+	private List<GridPreference> findGridPreference(List<TedamGrid<?>> gridList) throws LocalizedException {
+		Integer userId = SecurityUtils.getUser().getId();
+		Integer projectId = SecurityUtils.getUserSessionProject().getId();
+		String viewId = this.getClass().getName();
+		List<GridPreference> gridPreferenceList = new ArrayList<>();
+		for (TedamGrid<?> grid : gridList) {
+			GridPreference gridPreference = gridPreferenceService.findByUserIdAndProjectIdAndViewIdAndGridId(userId,
+					projectId, viewId, grid.getId());
+			if (gridPreference != null) {
+				gridPreferenceList.add(gridPreference);
+			}
+		}
+		return gridPreferenceList;
+	}
+
+	protected void saveGridPreference(List<TedamGrid<?>> gridList) {
+		try {
+			List<GridPreference> gridPreferenceList = findGridPreference(gridList);
+			if (gridPreferenceList.isEmpty()) {
+				for (TedamGrid<?> grid : gridList) {
+					GridPreference gridPreference = grid.saveGridPreferenceByGrid(grid);
+					gridPreference.setUserId(SecurityUtils.getUser().getId());
+					gridPreference.setProjectId(SecurityUtils.getUserSessionProject().getId());
+					gridPreference.setViewId(this.getClass().getName());
+					gridPreferenceList.add(gridPreference);
+				}
+			} else {
+				for (GridPreference gridPreference : gridPreferenceList) {
+					for (TedamGrid<?> grid : gridList) {
+						if (grid.getId().equals(gridPreference.getGridId())) {
+							gridPreference = grid.saveGridPreference(gridPreference);
+							break;
+						}
+					}
+				}
+			}
+			gridPreferenceService.save(gridPreferenceList);
+		} catch (LocalizedException e) {
+		}
+	}
+
+	protected void laodGridPreference(List<TedamGrid<?>> gridList) {
+		try {
+			for (GridPreference gridPreference : findGridPreference(gridList)) {
+				for (TedamGrid<?> grid : gridList) {
+					if (grid.getId().equals(gridPreference.getGridId())) {
+						grid.loadGridPreference(gridPreference);
+						break;
+					}
+				}
+			}
+		} catch (LocalizedException e) {
+		}
+	}
+
 }

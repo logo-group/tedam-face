@@ -17,6 +17,14 @@
 
 package com.lbs.tedam.ui.view.usersettings;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.TedamUserService;
 import com.lbs.tedam.exception.localized.LocalizedException;
@@ -31,8 +39,12 @@ import com.lbs.tedam.ui.components.basic.TedamTextField;
 import com.lbs.tedam.ui.components.combobox.TedamSessionProjectComboBox;
 import com.lbs.tedam.ui.components.combobox.TedamUserFavoriteTypeComboBox;
 import com.lbs.tedam.ui.components.combobox.TedamUserRoleComboBox;
-import com.lbs.tedam.ui.components.grid.*;
+import com.lbs.tedam.ui.components.grid.GridColumns;
 import com.lbs.tedam.ui.components.grid.GridColumns.GridColumn;
+import com.lbs.tedam.ui.components.grid.RUDOperations;
+import com.lbs.tedam.ui.components.grid.TedamFilterGrid;
+import com.lbs.tedam.ui.components.grid.TedamGrid;
+import com.lbs.tedam.ui.components.grid.TedamGridConfig;
 import com.lbs.tedam.ui.components.window.client.WindowSelectClient;
 import com.lbs.tedam.ui.components.window.environment.WindowSelectFavoriteEnvironment;
 import com.lbs.tedam.ui.components.window.job.WindowSelectJob;
@@ -50,12 +62,6 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Grid.SelectionMode;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @SpringView
 public class UserSettingsView extends AbstractEditView<TedamUser, TedamUserService, UserSettingsPresenter, UserSettingsView> {
@@ -165,6 +171,7 @@ public class UserSettingsView extends AbstractEditView<TedamUser, TedamUserServi
 
         };
         gridProjects = new TedamGrid<Project>(projectGridConfig, SelectionMode.NONE);
+		gridProjects.setId("UserSettingsProjectsGrid");
     }
 
     private void buildClientsGrid() {
@@ -198,6 +205,7 @@ public class UserSettingsView extends AbstractEditView<TedamUser, TedamUserServi
 
             }
         };
+		gridUserFavorites.setId("UserSettingsFavoritesGrid");
     }
 
     @Override
@@ -261,4 +269,12 @@ public class UserSettingsView extends AbstractEditView<TedamUser, TedamUserServi
     public void showUserFavoriteTypeNotSelected() {
         TedamNotification.showNotification(getLocaleValue("view.usersettings.messages.showUserFavoriteTypeNotSelected"), NotifyType.WARNING);
     }
+
+	@Override
+	protected void collectGrids() {
+		super.collectGrids();
+		getGridList().add(gridProjects);
+		getGridList().add(gridUserFavorites);
+	}
+
 }
