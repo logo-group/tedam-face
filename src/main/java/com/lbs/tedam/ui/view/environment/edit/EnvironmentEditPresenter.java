@@ -145,7 +145,7 @@ public class EnvironmentEditPresenter extends AbstractEditPresenter<Environment,
 
     private boolean isParametersEmpty(Environment environment) {
         int count = getView().getTedamJobParameterValueComboBoxContainer().getComponentCount();
-        if (environment.getJobParameterValues().size() != count) {
+        if (environment.getJobParameterValues().size() < count) {
             return true;
         }
         return false;
