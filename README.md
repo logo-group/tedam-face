@@ -19,7 +19,7 @@ When writing a test scenario, it is important  that a single mouse movement corr
 
 ## Associate Snapshot and Test Scenarios
 
-Select the snapshot files related to the test scenario and upload to the system. Associate the test scenario steps with the related snapshot file. In this way, the user can continue the process by selecting the components to be interacted through the interface connected to the test step.<br>
+Select the [snapshot files](https://github.com/logobs/tedam-snapshot-generator/blob/master/README.md) related to the test scenario and upload to the system. Associate the test scenario steps with the related snapshot file. In this way, the user can continue the process by selecting the components to be interacted through the interface connected to the test step.<br>
 
 Currently available test step types;<br>
 **ButtonClick:** In snapshot file contains a list of clickable components and selected which component the user will click.<br>
