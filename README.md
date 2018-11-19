@@ -38,8 +38,10 @@ In this case, it can be ensured that the product creation and ordering scenarios
 Job is the component where the test sets are classified and the clients to which they will run added.
 When a job is created it need following components:<br>
 -Test Sets which will be executed,<br>
--[Agents](https://github.com/logobs/tedam-agent) which run jobs,<br>
--[Environment](https://github.com/logobs/tedam/wiki/How-to-define-Environment%3F) which job runs on it.<br>
+-Agent which run jobs,<br>
+-Environment which job runs on it.<br>
+[What is the Tedam Agent?](https://github.com/logobs/tedam-agent)<br>
+[How to define Environment?](https://github.com/logobs/tedam/wiki/How-to-define-Environment%3F)
 
 ## Job Manager
 It is the screen where the active jobs can be started and stopped. Whether jobs run or not are monitored currently.
