@@ -17,6 +17,14 @@
 
 package com.lbs.tedam.ui.components.window.environment;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.annotation.PrototypeScope;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.Environment;
@@ -26,6 +34,7 @@ import com.lbs.tedam.ui.components.basic.TedamWindow;
 import com.lbs.tedam.ui.components.grid.GridColumns.GridColumn;
 import com.lbs.tedam.ui.components.grid.RUDOperations;
 import com.lbs.tedam.ui.components.grid.TedamFilterGrid;
+import com.lbs.tedam.ui.components.grid.TedamGrid;
 import com.lbs.tedam.ui.components.grid.TedamGridConfig;
 import com.lbs.tedam.ui.util.Enums.UIParameter;
 import com.lbs.tedam.ui.util.Enums.WindowSize;
@@ -35,13 +44,6 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.UI;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.spring.annotation.PrototypeScope;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @SpringComponent
 @PrototypeScope
@@ -80,6 +82,7 @@ public class WindowSelectFavoriteEnvironment extends TedamWindow {
             }
         };
         gridEnvironment = new TedamFilterGrid<>(gridConfigFiles, gridDataProviderEnvironment, SelectionMode.MULTI);
+		gridEnvironment.setId("FavoriteEnvironmentSelectWindow");
         return gridEnvironment;
     }
 
@@ -120,4 +123,8 @@ public class WindowSelectFavoriteEnvironment extends TedamWindow {
     protected void windowClose() {
     }
 
+	@Override
+	public TedamGrid<?> getWindowGrid() {
+		return gridEnvironment;
+	}
 }

@@ -20,6 +20,14 @@
  */
 package com.lbs.tedam.ui.components.window.jobparametervalue;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.annotation.PrototypeScope;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.JobParameter;
@@ -40,13 +48,6 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.UI;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.spring.annotation.PrototypeScope;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Ahmet.Izgi
@@ -91,6 +92,7 @@ public class WindowJobParameterValue extends TedamWindow {
         gridJobParameterValue = new TedamGrid<>(gridConfigFiles, SelectionMode.SINGLE);
         gridDataProviderJobParameterValue.setJobParameter(jobParameter);
         gridJobParameterValue.setGridDataProvider(gridDataProviderJobParameterValue);
+		gridJobParameterValue.setId("JobParameterValueWindow");
         return gridJobParameterValue;
     }
 
@@ -125,7 +127,10 @@ public class WindowJobParameterValue extends TedamWindow {
 
     @Override
     protected void windowClose() {
-
     }
 
+	@Override
+	public TedamGrid<?> getWindowGrid() {
+		return gridJobParameterValue;
+	}
 }

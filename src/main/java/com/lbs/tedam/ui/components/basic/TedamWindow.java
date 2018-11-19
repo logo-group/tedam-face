@@ -20,23 +20,35 @@
  */
 package com.lbs.tedam.ui.components.basic;
 
+import java.io.Serializable;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus;
+
+import com.lbs.tedam.app.security.SecurityUtils;
+import com.lbs.tedam.data.service.GridPreferenceService;
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.localization.TedamLocalizerWrapper;
+import com.lbs.tedam.model.GridPreference;
 import com.lbs.tedam.ui.components.CustomExceptions.TedamWindowNotAbleToOpenException;
+import com.lbs.tedam.ui.components.grid.TedamGrid;
 import com.lbs.tedam.ui.util.Enums.UIParameter;
 import com.lbs.tedam.ui.util.Enums.WindowSize;
 import com.lbs.tedam.ui.util.TedamNotification;
 import com.lbs.tedam.ui.util.TedamNotification.NotifyType;
 import com.lbs.tedam.util.HasLogger;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
-import org.vaadin.spring.events.EventBus;
-
-import java.io.Serializable;
-import java.util.Map;
 
 /**
  * @author Ahmet.Izgi
@@ -53,6 +65,9 @@ public abstract class TedamWindow extends Window implements TedamLocalizerWrappe
     private TedamButton btnOk;
     private TedamButton btnCancel;
 
+	@Autowired
+	private GridPreferenceService gridPreferenceService;
+
     public TedamWindow(WindowSize windowSize, EventBus eventBus, PropertyService propertyService) {
         this.eventBus = eventBus;
         this.propertyService = propertyService;
@@ -62,7 +77,6 @@ public abstract class TedamWindow extends Window implements TedamLocalizerWrappe
     }
 
     protected void initWindow() throws TedamWindowNotAbleToOpenException, LocalizedException {
-
         cssFormLayout = new VerticalLayout();
         cssFormLayout.setResponsive(true);
         cssFormLayout.setWidth(100f, Unit.PERCENTAGE);
@@ -83,6 +97,9 @@ public abstract class TedamWindow extends Window implements TedamLocalizerWrappe
         layRoot.setSizeFull();
         layRoot.setExpandRatio(contentPanel, 1);
         setContent(layRoot);
+		if (getWindowGrid() != null) {
+			laodGridPreference();
+		}
     }
 
     private Component buildFooter() {
@@ -134,7 +151,8 @@ public abstract class TedamWindow extends Window implements TedamLocalizerWrappe
         return footer;
     }
 
-    public abstract void open(Map<UIParameter, Object> parameters) throws TedamWindowNotAbleToOpenException, LocalizedException;
+	public abstract void open(Map<UIParameter, Object> parameters)
+			throws TedamWindowNotAbleToOpenException, LocalizedException;
 
     protected abstract Component buildContent() throws TedamWindowNotAbleToOpenException, LocalizedException;
 
@@ -151,6 +169,9 @@ public abstract class TedamWindow extends Window implements TedamLocalizerWrappe
         publishCloseSuccessEvent();
         windowClose();
         close();
+		if (getWindowGrid() != null) {
+			saveGridPreference();
+		}
     }
 
     protected void cancelButtonPressed() throws LocalizedException {
@@ -158,7 +179,7 @@ public abstract class TedamWindow extends Window implements TedamLocalizerWrappe
         close();
     }
 
-    protected abstract void windowClose();
+	protected abstract void windowClose();
 
     protected abstract boolean readyToClose();
 
@@ -192,4 +213,44 @@ public abstract class TedamWindow extends Window implements TedamLocalizerWrappe
         getLogger().error(e.getLocalizedMessage(), e);
         TedamNotification.showNotification(e.getLocalizedMessage(), NotifyType.ERROR);
     }
+
+	private GridPreference findGridPreference() throws LocalizedException {
+		Integer userId = SecurityUtils.getUser().getId();
+		Integer projectId = SecurityUtils.getUserSessionProject().getId();
+		String viewId = this.getClass().getName();
+		String gridId = getWindowGrid().getId();
+		GridPreference gridPreference = gridPreferenceService.findByUserIdAndProjectIdAndViewIdAndGridId(userId,
+				projectId, viewId, gridId);
+		return gridPreference;
+	}
+
+	private void saveGridPreference() {
+		try {
+			GridPreference gridPreference = findGridPreference();
+			if (gridPreference == null) {
+				gridPreference = getWindowGrid().saveGridPreference();
+				gridPreference.setUserId(SecurityUtils.getUser().getId());
+				gridPreference.setProjectId(SecurityUtils.getUserSessionProject().getId());
+				gridPreference.setViewId(this.getClass().getName());
+			} else {
+				gridPreference = getWindowGrid().saveGridPreference(gridPreference);
+			}
+			gridPreferenceService.save(gridPreference);
+		} catch (LocalizedException e) {
+			logError(e);
+		}
+	}
+
+	private void laodGridPreference() {
+		try {
+			GridPreference gridPreference = findGridPreference();
+			getWindowGrid().loadGridPreference(gridPreference);
+		} catch (LocalizedException e) {
+			logError(e);
+		}
+	}
+
+	public TedamGrid<?> getWindowGrid() {
+		return null;
+	}
 }

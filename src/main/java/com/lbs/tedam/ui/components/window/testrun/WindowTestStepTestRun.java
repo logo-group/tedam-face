@@ -41,6 +41,7 @@ import com.lbs.tedam.ui.components.basic.TedamWindow;
 import com.lbs.tedam.ui.components.grid.GridColumns.GridColumn;
 import com.lbs.tedam.ui.components.grid.RUDOperations;
 import com.lbs.tedam.ui.components.grid.TedamFilterGrid;
+import com.lbs.tedam.ui.components.grid.TedamGrid;
 import com.lbs.tedam.ui.components.grid.TedamGridConfig;
 import com.lbs.tedam.ui.components.layout.TedamVerticalLayout;
 import com.lbs.tedam.ui.util.Enums.UIParameter;
@@ -102,6 +103,7 @@ public class WindowTestStepTestRun extends TedamWindow {
                 return buildExecutionResultComponents(item);
             }
         };
+		gridTestStepTestRun.setId("TestStepTestRunWindow");
         return gridTestStepTestRun;
     }
 
@@ -161,4 +163,8 @@ public class WindowTestStepTestRun extends TedamWindow {
     protected void windowClose() {
     }
 
+	@Override
+	public TedamGrid<?> getWindowGrid() {
+		return gridTestStepTestRun;
+	}
 }
