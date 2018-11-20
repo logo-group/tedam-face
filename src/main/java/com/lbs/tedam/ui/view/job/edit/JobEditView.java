@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import com.lbs.tedam.data.service.JobService;
 import com.lbs.tedam.exception.localized.LocalizedException;
@@ -259,5 +260,11 @@ public class JobEditView extends AbstractEditView<Job, JobService, JobEditPresen
 		super.collectGrids();
 		getGridList().add(gridJobDetails);
 		getGridList().add(gridClients);
+	}
+	
+	public void showJobMessage(Job job, String responseString) {
+		NotifyType notifyType = responseString.equals(HttpStatus.OK.getReasonPhrase()) ? NotifyType.SUCCESS
+				: NotifyType.ERROR;
+		TedamNotification.showTrayNotification(job.getId() + " - " + job.getName() + " " + job.getStatus(), notifyType);
 	}
 }

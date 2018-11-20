@@ -76,7 +76,7 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private final String START_JOB = "startJob";
+	public static final String START_JOB = "startJob";
 	private final String STOP_JOB = "stopJob";
 	private final String GET_CLIENT_MAP = "getClientMap";
 
