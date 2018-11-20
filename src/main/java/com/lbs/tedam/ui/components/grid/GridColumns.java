@@ -153,7 +153,8 @@ public class GridColumns {
          */
         JOB_NAME("name", "column.job.name", DataType.TEXT, null, false, false, true), //
         JOB_TYPE("type", "column.job.type", DataType.SELECT_ENUM, JobType.class, false, true, true), //
-        JOB_ENVIRONMENT_NAME("jobEnvironment", "column.environment.name", DataType.TEXT, null, true, false, true), //
+		JOB_ENVIRONMENT_NAME("jobEnvironmentName", "column.job.environmentName", DataType.TEXT, null, true, false,
+				true), //
         JOB_EXECUTION_DURATION("executionDuration", "column.job.executionDuration", DataType.TEXT, null, false, true, true), //
         JOB_LAST_EXECUTOR("lastExecutingUserName", "column.job.lastExecutor", DataType.TEXT, null, false, true, true), //
         JOB_LAST_EXECUTED_START_DATE("lastExecutedStartDate", "column.job.lastExecutedStartDate", DataType.DATE_TIME, null, false, false, true), //
