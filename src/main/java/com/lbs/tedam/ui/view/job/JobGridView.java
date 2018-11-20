@@ -17,6 +17,14 @@
 
 package com.lbs.tedam.ui.view.job;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.lbs.tedam.data.service.JobService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.Job;
@@ -37,12 +45,6 @@ import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @SpringView
 public class JobGridView extends AbstractGridView<Job, JobService, JobGridPresenter, JobGridView> {
@@ -83,7 +85,7 @@ public class JobGridView extends AbstractGridView<Job, JobService, JobGridPresen
     private void init() {
         getPresenter().setView(this);
         setHeader(getLocaleValue("view.jobgrid.header"));
-        getTopBarLayout().addComponents(buildAddActiveJobs(), buildRemoveActiveJobs(), buildDefineEnvironment());
+		getTopBarLayout().addComponents(buildFollowJobs(), buildUnfollowJobs(), buildDefineEnvironment());
     }
 
     @Override
@@ -91,44 +93,44 @@ public class JobGridView extends AbstractGridView<Job, JobService, JobGridPresen
         getGrid().getColumn(GridColumn.JOB_NAME.getColumnName()).setDescriptionGenerator(Job::getName);
     }
 
-    private Component buildAddActiveJobs() {
-        TedamButton addActiveJobs = new TedamButton("view.jobgrid.addActiveJobs", VaadinIcons.INSERT);
-        addActiveJobs.setWidthUndefined();
-        addActiveJobs.setCaption("");
-        addActiveJobs.addClickListener(e -> {
+	private Component buildFollowJobs() {
+		TedamButton followJobs = new TedamButton("view.jobgrid.followJobs", VaadinIcons.EYE);
+		followJobs.setWidthUndefined();
+		followJobs.setCaption("");
+		followJobs.addClickListener(e -> {
             if (getGrid().getSelectedItems().isEmpty()) {
                 showGridRowNotSelected();
                 return;
             }
             try {
-                getPresenter().addActiveJobs(new ArrayList<>(getGrid().getSelectedItems()));
+				getPresenter().followJobs(new ArrayList<>(getGrid().getSelectedItems()));
                 getGrid().deselectAll();
             } catch (LocalizedException e1) {
                 logError(e1);
             }
 
         });
-        return addActiveJobs;
+		return followJobs;
     }
 
-    private Component buildRemoveActiveJobs() {
-        TedamButton removeActiveJobs = new TedamButton("view.jobgrid.removeActiveJobs", VaadinIcons.EXTERNAL_LINK);
-        removeActiveJobs.setWidthUndefined();
-        removeActiveJobs.setCaption("");
-        removeActiveJobs.addClickListener(e -> {
+	private Component buildUnfollowJobs() {
+		TedamButton unfollowJobs = new TedamButton("view.jobgrid.unfollowJobs", VaadinIcons.EYE_SLASH);
+		unfollowJobs.setWidthUndefined();
+		unfollowJobs.setCaption("");
+		unfollowJobs.addClickListener(e -> {
             if (getGrid().getSelectedItems().isEmpty()) {
                 showGridRowNotSelected();
                 return;
             }
             try {
-                getPresenter().removeActiveJobs(new ArrayList<>(getGrid().getSelectedItems()));
+				getPresenter().unfollowJobs(new ArrayList<>(getGrid().getSelectedItems()));
                 getGrid().deselectAll();
             } catch (LocalizedException e1) {
                 logError(e1);
             }
 
         });
-        return removeActiveJobs;
+		return unfollowJobs;
     }
 
     private Component buildDefineEnvironment() {
@@ -152,11 +154,11 @@ public class JobGridView extends AbstractGridView<Job, JobService, JobGridPresen
     protected void showActivated(boolean oneActivated, List<String> alreadyActiveNames) {
         String message = "";
         if (oneActivated) {
-            String addedMessage = getLocaleValue("view.jobgrid.messages.showAddedToActives");
+			String addedMessage = getLocaleValue("view.jobgrid.messages.showJobsFollowed");
             message += addedMessage + "\n";
         }
         if (alreadyActiveNames.size() > 0) {
-            String alreadyActivatedMessage = getLocaleValue("view.jobgrid.messages.showAlreadyAddedToActives");
+			String alreadyActivatedMessage = getLocaleValue("view.jobgrid.messages.showAlreadyFollowed");
             message += alreadyActivatedMessage + "\n";
             for (String s : alreadyActiveNames) {
                 message += s + "\n";
@@ -179,11 +181,11 @@ public class JobGridView extends AbstractGridView<Job, JobService, JobGridPresen
     protected void showDeActivated(boolean oneDeActivated, List<String> alreadyDeActiveNames) {
         String message = "";
         if (oneDeActivated) {
-            String addedMessage = getLocaleValue("view.jobgrid.messages.showRemovedToActives");
+			String addedMessage = getLocaleValue("view.jobgrid.messages.showJobsUnfollowed");
             message += addedMessage + "\n";
         }
         if (alreadyDeActiveNames.size() > 0) {
-            String alreadyActivatedMessage = getLocaleValue("view.jobgrid.messages.showAlreadyRemovedToActives");
+			String alreadyActivatedMessage = getLocaleValue("view.jobgrid.messages.showAlreadyUnfollowed");
             message += alreadyActivatedMessage + "\n";
             for (String s : alreadyDeActiveNames) {
                 message += s + "\n";

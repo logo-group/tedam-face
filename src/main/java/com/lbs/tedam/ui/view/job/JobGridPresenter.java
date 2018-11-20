@@ -17,6 +17,18 @@
 
 package com.lbs.tedam.ui.view.job;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+import org.vaadin.spring.events.annotation.EventBusListenerMethod;
+
 import com.lbs.tedam.data.service.JobService;
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.data.service.TedamUserService;
@@ -30,16 +42,6 @@ import com.lbs.tedam.ui.util.TedamStatic;
 import com.lbs.tedam.ui.view.AbstractGridPresenter;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-import org.vaadin.spring.events.annotation.EventBusListenerMethod;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @SpringComponent
 @ViewScope
@@ -61,38 +63,38 @@ public class JobGridPresenter extends AbstractGridPresenter<Job, JobService, Job
         subscribeToEventBus();
     }
 
-    public void addActiveJobs(List<Job> jobList) throws LocalizedException {
-        boolean oneActivated = false;
-        List<String> alreadyActiveNames = new ArrayList<>();
+	public void followJobs(List<Job> jobList) throws LocalizedException {
+		boolean oneFollowed = false;
+		List<String> alreadyFollowedNames = new ArrayList<>();
 
         for (Job job : jobList) {
             if (job.isActive()) {
-                alreadyActiveNames.add(job.getName());
-            } else if (!oneActivated) {
-                oneActivated = true;
+				alreadyFollowedNames.add(job.getName());
+			} else if (!oneFollowed) {
+				oneFollowed = true;
             }
             job.setActive(true);
         }
 
         getService().save(jobList);
-        getView().showActivated(oneActivated, alreadyActiveNames);
+		getView().showActivated(oneFollowed, alreadyFollowedNames);
     }
 
-    public void removeActiveJobs(List<Job> jobList) throws LocalizedException {
-        boolean oneDeActivated = false;
-        List<String> alreadyDeActiveNames = new ArrayList<>();
+	public void unfollowJobs(List<Job> jobList) throws LocalizedException {
+		boolean oneUnfollowed = false;
+		List<String> alreadyUnfollowedNames = new ArrayList<>();
 
         for (Job job : jobList) {
             if (!job.isActive()) {
-                alreadyDeActiveNames.add(job.getName());
-            } else if (!oneDeActivated) {
-                oneDeActivated = true;
+				alreadyUnfollowedNames.add(job.getName());
+			} else if (!oneUnfollowed) {
+				oneUnfollowed = true;
             }
             job.setActive(false);
         }
 
         getService().save(jobList);
-        getView().showDeActivated(oneDeActivated, alreadyDeActiveNames);
+		getView().showDeActivated(oneUnfollowed, alreadyUnfollowedNames);
     }
 
     public void prepareWindowSelectEnvironment() throws LocalizedException {

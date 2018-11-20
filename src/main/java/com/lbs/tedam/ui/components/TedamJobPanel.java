@@ -17,6 +17,12 @@
 
 package com.lbs.tedam.ui.components;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.lbs.tedam.localization.LocaleConstants;
 import com.lbs.tedam.localization.TedamLocalizerWrapper;
 import com.lbs.tedam.model.Job;
@@ -33,11 +39,6 @@ import com.vaadin.server.Resource;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 @Component
 @Scope("prototype")
@@ -56,7 +57,7 @@ public class TedamJobPanel extends TedamPanel implements TedamLocalizerWrapper {
     private VerticalLayout mainLayout;
     private TedamButton btnStart;
     private TedamButton btnStop;
-    private TedamButton btnRemove;
+    private TedamButton btnUnfollow;
     private TedamButton btnReset;
 
     private JobPanelButtonClickListener clickListener;
@@ -91,11 +92,9 @@ public class TedamJobPanel extends TedamPanel implements TedamLocalizerWrapper {
         if (JobStatus.getInActiveJobStatus().contains(job.getStatus())) {
             getBtnStart().setEnabled(true);
             getBtnStop().setEnabled(false);
-            getBtnRemove().setEnabled(true);
         } else {
             getBtnStart().setEnabled(false);
             getBtnStop().setEnabled(true);
-            getBtnRemove().setEnabled(false);
         }
     }
 
@@ -139,11 +138,11 @@ public class TedamJobPanel extends TedamPanel implements TedamLocalizerWrapper {
         btnStop = buildButton("view.tedammanager.button.stopjob", job.getId().toString(), VaadinIcons.STOP);
         btnStop.setDisableOnClick(true);
         btnStop.addClickListener(e -> clickListener.stopButtonClickOperations(job));
-        btnRemove = buildButton("view.tedammanager.button.removeJob", job.getId().toString(), VaadinIcons.MINUS);
-        btnRemove.addClickListener(e -> clickListener.removeButtonClickOperations(job));
+		btnUnfollow = buildButton("view.tedammanager.button.unfollowJob", job.getId().toString(), VaadinIcons.EYE_SLASH);
+		btnUnfollow.addClickListener(e -> clickListener.unfollowButtonClickOperations(job));
         btnReset = buildButton("view.tedammanager.button.resetJob", job.getId().toString(), VaadinIcons.REFRESH);
         btnReset.addClickListener(e -> clickListener.resetButtonClickOperations(job));
-        footer.addComponents(btnStart, btnStop, btnRemove, btnReset);
+        footer.addComponents(btnStart, btnStop, btnUnfollow, btnReset);
         return footer;
     }
 
@@ -164,8 +163,8 @@ public class TedamJobPanel extends TedamPanel implements TedamLocalizerWrapper {
         return btnStop;
     }
 
-    public TedamButton getBtnRemove() {
-        return btnRemove;
+	public TedamButton getBtnUnfollow() {
+        return btnUnfollow;
     }
 
     public Job getJob() {
@@ -185,7 +184,7 @@ public class TedamJobPanel extends TedamPanel implements TedamLocalizerWrapper {
 
         public void stopButtonClickOperations(Job job);
 
-        public void removeButtonClickOperations(Job job);
+		public void unfollowButtonClickOperations(Job job);
 
         public void startButtonClickOperations(Job job);
 

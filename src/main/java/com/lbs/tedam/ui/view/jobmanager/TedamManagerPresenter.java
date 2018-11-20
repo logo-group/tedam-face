@@ -154,9 +154,9 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 			}
 
 			@Override
-			public void removeButtonClickOperations(Job job) {
+			public void unfollowButtonClickOperations(Job job) {
 				try {
-					doRemoveButtonClickOperations(job);
+					doUnfollowButtonClickOperations(job);
 				} catch (LocalizedException e) {
 					getLogger().error(e.getMessage(), e);
 				}
@@ -202,7 +202,7 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 		rebuildTedamJobPanel(job);
 	}
 
-	private void doRemoveButtonClickOperations(Job job) throws LocalizedException {
+	private void doUnfollowButtonClickOperations(Job job) throws LocalizedException {
 		job.setActive(false);
 		job = jobService.save(job);
 		TedamJobPanel tedamJobPanel = getTedamJobPanel(job);
