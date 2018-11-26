@@ -13,7 +13,7 @@
 
 ## Creation of Test Scenarios
 
-The TEDAM automation process starts with the creation of test scenarios in the TedamFace interface. 
+The TEDAM automation process starts with the creation of test scenarios in the Tedam Face interface. 
 When creating the test scenario, it is critical that the scenario steps are atomic.
 When writing a test scenario, it is important  that a single mouse movement corresponds to a single scenario step.
 
