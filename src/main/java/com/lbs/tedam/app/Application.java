@@ -17,33 +17,52 @@
 
 package com.lbs.tedam.app;
 
-import com.lbs.tedam.app.security.SecurityConfig;
-import com.lbs.tedam.data.config.DataConfig;
-import com.lbs.tedam.data.service.impl.TedamUserServiceImpl;
-import com.lbs.tedam.ui.AppUI;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
 import org.vaadin.spring.events.annotation.EnableEventBus;
 
-@SpringBootApplication(scanBasePackageClasses = {AppUI.class, Application.class, TedamUserServiceImpl.class, SecurityConfig.class, DataConfig.class, TedamFaceDataConfig.class})
+import com.lbs.tedam.app.security.SecurityConfig;
+import com.lbs.tedam.data.config.DataConfig;
+import com.lbs.tedam.data.service.impl.TedamUserServiceImpl;
+import com.lbs.tedam.ui.AppUI;
+import com.lbs.tedam.util.DataInitializationUtil;
+
+@SpringBootApplication(scanBasePackageClasses = { AppUI.class, Application.class,
+		TedamUserServiceImpl.class, SecurityConfig.class, DataConfig.class, TedamFaceDataConfig.class,
+		DataInitializationUtil.class
+})
 @EnableEventBus
 public class Application extends SpringBootServletInitializer {
 
-    public static final String APP_URL = "/";
-    public static final String LOGIN_URL = "/login.html";
-    public static final String LOGOUT_URL = "/login.html?logout";
-    public static final String LOGIN_FAILURE_URL = "/login.html?error";
-    public static final String LOGIN_PROCESSING_URL = "/login";
-    public static final String REST_URL = "api";
+	@Autowired
+	private DataInitializationUtil dataInitUtil;
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+	public static final String APP_URL = "/";
+	public static final String LOGIN_URL = "/login.html";
+	public static final String LOGOUT_URL = "/login.html?logout";
+	public static final String LOGIN_FAILURE_URL = "/login.html?error";
+	public static final String LOGIN_PROCESSING_URL = "/login";
+	public static final String REST_URL = "api";
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Application.class);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(Application.class);
+	}
+
+	@Bean
+	public InitializingBean initializeDatabase() {
+		return () -> {
+			dataInitUtil.loadInitialData();
+		};
+	}
+
 }
