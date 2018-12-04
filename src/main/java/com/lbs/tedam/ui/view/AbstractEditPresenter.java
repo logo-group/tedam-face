@@ -249,8 +249,8 @@ public abstract class AbstractEditPresenter<T extends AbstractBaseEntity, S exte
                 item = save(item);
                 if (item != null) {
                     enterView(TedamStatic.getUIParameterMap(item.getId(), ViewMode.VIEW));
+					getView().showSuccessfulUpdate();
                 }
-				getView().showSuccessfulUpdate();
             } else if (getView().getViewMode().equals(ViewMode.VIEW)) {
                 enterView(TedamStatic.getUIParameterMap(item.getId(), ViewMode.EDIT));
             }
