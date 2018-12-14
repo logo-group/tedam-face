@@ -39,6 +39,7 @@ import org.vaadin.spring.events.annotation.EventBusListenerMethod;
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.data.service.SnapshotDefinitionService;
+import com.lbs.tedam.data.service.TedamFolderService;
 import com.lbs.tedam.data.service.TedamUserService;
 import com.lbs.tedam.data.service.TestCaseService;
 import com.lbs.tedam.data.service.TestStepService;
@@ -94,6 +95,7 @@ public class TestCaseEditPresenter
 	private final LookUpDataProvider lookUpDataProvider;
 	private final SnapshotDefinitionService snapshotDefinitionService;
 	private final TestStepService testStepService;
+	private final TedamFolderService folderService;
 	private final TestCaseTestRunDataProvider testCaseTestRunDataProvider;
 	private final UploadedFilesDataProvider uploadedFilesDataProvider;
 
@@ -103,7 +105,7 @@ public class TestCaseEditPresenter
 			TestStepDataProvider testStepDataProvider, SnapshotDefinitionService snapshotDefinitionService,
 			LookUpDataProvider lookUpDataProvider, UploadedFilesDataProvider uploadedFilesDataProvider,
 			TestStepService testStepService, TestCaseTestRunDataProvider testCaseTestRunDataProvider,
-			PropertyService propertyService) {
+			PropertyService propertyService, TedamFolderService folderService) {
 		super(viewEventBus, navigationManager, testCaseService, TestCase.class, beanFactory, userService,
 				propertyService);
 		this.testStepDataProvider = testStepDataProvider;
@@ -112,6 +114,7 @@ public class TestCaseEditPresenter
 		this.testStepService = testStepService;
 		this.testCaseTestRunDataProvider = testCaseTestRunDataProvider;
 		this.uploadedFilesDataProvider = uploadedFilesDataProvider;
+		this.folderService = folderService;
 	}
 
 	@Override
@@ -614,7 +617,13 @@ public class TestCaseEditPresenter
 	@Override
 	protected void getTitleForHeader() {
 		if (getItem().getName() != null) {
-			getView().setTitle(getView().getTitle() + ": " + getItem().getName());
+			try {
+				String folderName = folderService.getById(getItem().getTestCaseFolderId()).getName();
+				getView().setTitle(getView().getTitle() + ": " + getItem().getName());
+				getView().getLblFolder().setValue(getLocaleValue("view.caption.belongedfolder") + folderName);
+			} catch (LocalizedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
