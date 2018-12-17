@@ -276,6 +276,7 @@ public class TestCaseEditPresenter
 				TedamFileUtils.getFiles(getPropertyService().getTestcaseFolder(getItem().getId())));
 		getView().organizeUploadedFilesGrid(uploadedFilesDataProvider);
 
+		getView().getGridUploadedFiles().getDataProvider().refreshAll();
 		getView().getGridUploadedFiles().refreshAll();
 		getView().getGridUploadedFiles().focus();
 
