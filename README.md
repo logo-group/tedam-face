@@ -1,4 +1,4 @@
-# TEDAM-Face
+# TEDAM Face
 <a href="http://www.logo.com.tr"><img src="https://www.logo.com.tr/img/logo.png"/></a>
 
 [![Build Status](https://travis-ci.com/logobs/tedam-face.svg?branch=master)](https://travis-ci.com/logobs/tedam-face)
