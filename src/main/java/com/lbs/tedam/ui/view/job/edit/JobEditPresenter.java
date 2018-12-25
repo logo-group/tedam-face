@@ -185,6 +185,9 @@ public class JobEditPresenter extends AbstractEditPresenter<Job, JobService, Job
 		if (item.getJobDetails().isEmpty()) {
 			getView().showJobDetailsEmpty();
 			return null;
+		} else if (item.getPlannedDate() == null && item.isRunEveryDay()) {
+			getView().showPlannedDateEmpty();
+			return null;
 		}
 		setJobDetailPosition(item);
 		Job saved = super.save(item);

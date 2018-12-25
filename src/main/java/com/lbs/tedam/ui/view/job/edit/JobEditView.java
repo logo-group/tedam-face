@@ -59,201 +59,213 @@ import com.vaadin.ui.Grid.SelectionMode;
 @SpringView
 public class JobEditView extends AbstractEditView<Job, JobService, JobEditPresenter, JobEditView> {
 
-    private static final long serialVersionUID = 1L;
-    private final WindowSelectClient windowClient;
-    private final WindowTestSet windowTestSet;
-    private TedamTextField name;
-    private TedamEnvironmentComboBox jobEnvironment;
+	private static final long serialVersionUID = 1L;
+	private final WindowSelectClient windowClient;
+	private final WindowTestSet windowTestSet;
+	private TedamTextField name;
+	private TedamEnvironmentComboBox jobEnvironment;
 	private NotificationGroupComboBox notificationGroup;
-    private TedamJobTypeComboBox type;
-    private TedamDateTimeField plannedDate;
-    private TedamDateTimeField lastExecutedStartDate;
-    private TedamDateTimeField lastExecutedEndDate;
-    private TedamTextField executionDuration;
-    private TedamCheckBox ci;
-    private TedamFilterGrid<JobDetail> gridJobDetails;
-    private TedamButton addTestSets;
-    private TedamButton removeTestSets;
-    private TedamButton addClients;
-    private TedamButton removeClients;
-    private TedamFilterGrid<Client> gridClients;
+	private TedamJobTypeComboBox type;
+	private TedamDateTimeField plannedDate;
+	private TedamDateTimeField lastExecutedStartDate;
+	private TedamDateTimeField lastExecutedEndDate;
+	private TedamTextField executionDuration;
+	private TedamCheckBox ci;
+	private TedamCheckBox runEveryDay;
+	private TedamFilterGrid<JobDetail> gridJobDetails;
+	private TedamButton addTestSets;
+	private TedamButton removeTestSets;
+	private TedamButton addClients;
+	private TedamButton removeClients;
+	private TedamFilterGrid<Client> gridClients;
 
-    @Autowired
+	@Autowired
 	public JobEditView(JobEditPresenter presenter, TedamEnvironmentComboBox jobEnvironment,
 			NotificationGroupComboBox notificationGroup, TedamJobTypeComboBox type, WindowSelectClient windowClient,
-                       WindowTestSet windowTestSet) {
-        super(presenter);
-        this.jobEnvironment = jobEnvironment;
-        this.type = type;
-        this.windowClient = windowClient;
-        this.windowTestSet = windowTestSet;
+			WindowTestSet windowTestSet) {
+		super(presenter);
+		this.jobEnvironment = jobEnvironment;
+		this.type = type;
+		this.windowClient = windowClient;
+		this.windowTestSet = windowTestSet;
 		this.notificationGroup = notificationGroup;
-    }
+	}
 
-    @Override
-    public String getHeader() {
-        return getLocaleValue("view.jobedit.header");
-    }
+	@Override
+	public String getHeader() {
+		return getLocaleValue("view.jobedit.header");
+	}
 
-    @PostConstruct
-    private void initView() {
+	@PostConstruct
+	private void initView() {
 
-        name = new TedamTextField("view.jobedit.textfield.name", "full", true, true);
-        plannedDate = new TedamDateTimeField("view.jobedit.datetimefield.planneddate", "half", false, true);
-        lastExecutedStartDate = new TedamDateTimeField("view.jobedit.datetimefield.lastexecutedstartdate", "half", false, false);
-        lastExecutedEndDate = new TedamDateTimeField("view.jobedit.datetimefield.lastexecutedenddate", "half", false, false);
-        executionDuration = new TedamTextField("view.jobedit.textfield.executionDuration", "half", false, false);
+		name = new TedamTextField("view.jobedit.textfield.name", "full", true, true);
+		plannedDate = new TedamDateTimeField("view.jobedit.datetimefield.planneddate", "half", false, true);
+		lastExecutedStartDate = new TedamDateTimeField("view.jobedit.datetimefield.lastexecutedstartdate", "half",
+				false, false);
+		lastExecutedEndDate = new TedamDateTimeField("view.jobedit.datetimefield.lastexecutedenddate", "half", false,
+				false);
+		executionDuration = new TedamTextField("view.jobedit.textfield.executionDuration", "half", false, false);
 
-        ci = new TedamCheckBox("view.jobedit.checkbox.ci", null, true, true);
+		ci = new TedamCheckBox("view.jobedit.checkbox.ci", null, true, true);
 
-        buildAddAndRemoveButtons();
-        buildTestSetsGrid();
-        buildClientsGrid();
+		runEveryDay = new TedamCheckBox("view.jobedit.checkbox.runeveryday", null, true, true);
+
+		buildAddAndRemoveButtons();
+		buildTestSetsGrid();
+		buildClientsGrid();
 
 		addSection(getLocaleValue("view.viewedit.section.general"), 0, null, name, plannedDate, jobEnvironment, type,
-				notificationGroup, lastExecutedStartDate, lastExecutedEndDate, executionDuration,
-                ci);
-        addSection(getLocaleValue("view.jobedit.section.testsets"), 1, null, addTestSets, removeTestSets, gridJobDetails);
-        addSection(getLocaleValue("view.jobedit.section.clients"), 2, null, addClients, removeClients, gridClients);
+				notificationGroup, lastExecutedStartDate, lastExecutedEndDate, executionDuration, ci, runEveryDay);
+		addSection(getLocaleValue("view.jobedit.section.testsets"), 1, null, addTestSets, removeTestSets,
+				gridJobDetails);
+		addSection(getLocaleValue("view.jobedit.section.clients"), 2, null, addClients, removeClients, gridClients);
 
-        getPresenter().setView(this);
+		getPresenter().setView(this);
 
-    }
+	}
 
-    private void buildAddAndRemoveButtons() {
-        addTestSets = new TedamButton("view.jobedit.button.addtestsets", VaadinIcons.PLUS_CIRCLE);
-        addTestSets.addStyleName("half");
-        removeTestSets = new TedamButton("view.jobedit.button.removetestsets", VaadinIcons.MINUS_CIRCLE);
-        removeTestSets.addStyleName("half");
-        addClients = new TedamButton("view.jobedit.button.addclients", VaadinIcons.PLUS_CIRCLE);
-        addClients.addStyleName("half");
-        removeClients = new TedamButton("view.jobedit.button.removeclients", VaadinIcons.MINUS_CIRCLE);
-        removeClients.addStyleName("half");
+	private void buildAddAndRemoveButtons() {
+		addTestSets = new TedamButton("view.jobedit.button.addtestsets", VaadinIcons.PLUS_CIRCLE);
+		addTestSets.addStyleName("half");
+		removeTestSets = new TedamButton("view.jobedit.button.removetestsets", VaadinIcons.MINUS_CIRCLE);
+		removeTestSets.addStyleName("half");
+		addClients = new TedamButton("view.jobedit.button.addclients", VaadinIcons.PLUS_CIRCLE);
+		addClients.addStyleName("half");
+		removeClients = new TedamButton("view.jobedit.button.removeclients", VaadinIcons.MINUS_CIRCLE);
+		removeClients.addStyleName("half");
 
-        addTestSets.addClickListener(e -> {
-            try {
-                getPresenter().prepareJobDetailWindow();
-            } catch (LocalizedException e1) {
-                logError(e1);
-            }
-        });
-        removeTestSets.addClickListener(e -> getPresenter().removeJobDetails());
-        addClients.addClickListener(e -> {
-            try {
-                getPresenter().prepareClientWindow();
-            } catch (LocalizedException e1) {
-                logError(e1);
-            }
-        });
-        removeClients.addClickListener(e -> getPresenter().removeClients());
-    }
+		addTestSets.addClickListener(e -> {
+			try {
+				getPresenter().prepareJobDetailWindow();
+			} catch (LocalizedException e1) {
+				logError(e1);
+			}
+		});
+		removeTestSets.addClickListener(e -> getPresenter().removeJobDetails());
+		addClients.addClickListener(e -> {
+			try {
+				getPresenter().prepareClientWindow();
+			} catch (LocalizedException e1) {
+				logError(e1);
+			}
+		});
+		removeClients.addClickListener(e -> getPresenter().removeClients());
+	}
 
-    protected void organizeTestSetsGrid(AbstractDataProvider<JobDetail> abstractDataProvider) {
-        gridJobDetails.setGridDataProvider(abstractDataProvider);
-        gridJobDetails.initFilters();
-    }
+	protected void organizeTestSetsGrid(AbstractDataProvider<JobDetail> abstractDataProvider) {
+		gridJobDetails.setGridDataProvider(abstractDataProvider);
+		gridJobDetails.initFilters();
+	}
 
-    protected void organizeClientsGrid(AbstractDataProvider<Client> abstractDataProvider) {
-        gridClients.setGridDataProvider(abstractDataProvider);
-        gridClients.initFilters();
-    }
+	protected void organizeClientsGrid(AbstractDataProvider<Client> abstractDataProvider) {
+		gridClients.setGridDataProvider(abstractDataProvider);
+		gridClients.initFilters();
+	}
 
-    private TedamGridConfig<JobDetail> buildJobDetailGridConfig() {
-        TedamGridConfig<JobDetail> jobDetailsGridConfig = new TedamGridConfig<JobDetail>() {
+	private TedamGridConfig<JobDetail> buildJobDetailGridConfig() {
+		TedamGridConfig<JobDetail> jobDetailsGridConfig = new TedamGridConfig<JobDetail>() {
 
-            @Override
-            public List<GridColumn> getColumnList() {
-                return GridColumns.GridColumn.JOB_DETAILS_COLUMNS;
-            }
+			@Override
+			public List<GridColumn> getColumnList() {
+				return GridColumns.GridColumn.JOB_DETAILS_COLUMNS;
+			}
 
-            @Override
-            public Class<JobDetail> getBeanType() {
-                return JobDetail.class;
-            }
+			@Override
+			public Class<JobDetail> getBeanType() {
+				return JobDetail.class;
+			}
 
-            @Override
-            public List<RUDOperations> getRUDOperations() {
-                List<RUDOperations> operations = new ArrayList<RUDOperations>();
-                operations.add(RUDOperations.NONE);
-                return operations;
-            }
+			@Override
+			public List<RUDOperations> getRUDOperations() {
+				List<RUDOperations> operations = new ArrayList<RUDOperations>();
+				operations.add(RUDOperations.NONE);
+				return operations;
+			}
 
-        };
-        return jobDetailsGridConfig;
-    }
+		};
+		return jobDetailsGridConfig;
+	}
 
-    private TedamGridConfig<Client> buildClientGridConfig() {
-        TedamGridConfig<Client> clientsGridConfig = new TedamGridConfig<Client>() {
+	private TedamGridConfig<Client> buildClientGridConfig() {
+		TedamGridConfig<Client> clientsGridConfig = new TedamGridConfig<Client>() {
 
-            @Override
-            public List<GridColumn> getColumnList() {
-                return GridColumns.GridColumn.CLIENT_COLUMNS;
-            }
+			@Override
+			public List<GridColumn> getColumnList() {
+				return GridColumns.GridColumn.CLIENT_COLUMNS;
+			}
 
-            @Override
-            public Class<Client> getBeanType() {
-                return Client.class;
-            }
+			@Override
+			public Class<Client> getBeanType() {
+				return Client.class;
+			}
 
-            @Override
-            public List<RUDOperations> getRUDOperations() {
-                List<RUDOperations> operations = new ArrayList<RUDOperations>();
-                operations.add(RUDOperations.NONE);
-                return operations;
-            }
+			@Override
+			public List<RUDOperations> getRUDOperations() {
+				List<RUDOperations> operations = new ArrayList<RUDOperations>();
+				operations.add(RUDOperations.NONE);
+				return operations;
+			}
 
-        };
-        return clientsGridConfig;
-    }
+		};
+		return clientsGridConfig;
+	}
 
-    protected void buildTestSetsGrid() {
-        gridJobDetails = new TedamFilterGrid<JobDetail>(buildJobDetailGridConfig(), SelectionMode.MULTI);
+	protected void buildTestSetsGrid() {
+		gridJobDetails = new TedamFilterGrid<JobDetail>(buildJobDetailGridConfig(), SelectionMode.MULTI);
 		gridJobDetails.setId("JobDetailGrid");
-    }
+	}
 
-    protected void buildClientsGrid() {
-        gridClients = new TedamFilterGrid<Client>(buildClientGridConfig(), SelectionMode.MULTI);
+	protected void buildClientsGrid() {
+		gridClients = new TedamFilterGrid<Client>(buildClientGridConfig(), SelectionMode.MULTI);
 		gridClients.setId("JobClientGrid");
-    }
+	}
 
-    public TedamFilterGrid<JobDetail> getGridJobDetails() {
-        return gridJobDetails;
-    }
+	public TedamFilterGrid<JobDetail> getGridJobDetails() {
+		return gridJobDetails;
+	}
 
-    public TedamFilterGrid<Client> getGridClients() {
-        return gridClients;
-    }
+	public TedamFilterGrid<Client> getGridClients() {
+		return gridClients;
+	}
 
-    public void openClientSelectWindow(Map<UIParameter, Object> windowParameters) throws LocalizedException {
-        try {
-            windowClient.open(windowParameters);
-        } catch (TedamWindowNotAbleToOpenException e) {
-            e.printStackTrace();
-        }
-    }
+	public void openClientSelectWindow(Map<UIParameter, Object> windowParameters) throws LocalizedException {
+		try {
+			windowClient.open(windowParameters);
+		} catch (TedamWindowNotAbleToOpenException e) {
+			e.printStackTrace();
+		}
+	}
 
-    public void openTestSetSelectWindow(Map<UIParameter, Object> windowParameters) throws LocalizedException {
-        try {
-            windowTestSet.open(windowParameters);
-        } catch (TedamWindowNotAbleToOpenException e) {
-            e.printStackTrace();
-        }
-    }
+	public void openTestSetSelectWindow(Map<UIParameter, Object> windowParameters) throws LocalizedException {
+		try {
+			windowTestSet.open(windowParameters);
+		} catch (TedamWindowNotAbleToOpenException e) {
+			e.printStackTrace();
+		}
+	}
 
-    public void showGridRowNotSelected() {
-        TedamNotification.showNotification(getLocaleValue("view.jobedit.messages.showGridRowNotSelected"), NotifyType.ERROR);
-    }
+	public void showGridRowNotSelected() {
+		TedamNotification.showNotification(getLocaleValue("view.jobedit.messages.showGridRowNotSelected"),
+				NotifyType.ERROR);
+	}
 
-    public void showJobDetailsEmpty() {
-        TedamNotification.showNotification(getLocaleValue("view.jobedit.messages.showJobDetailsEmpty"), NotifyType.ERROR);
-    }
+	public void showJobDetailsEmpty() {
+		TedamNotification.showNotification(getLocaleValue("view.jobedit.messages.showJobDetailsEmpty"),
+				NotifyType.ERROR);
+	}
 
-    @Override
-    public void bindFormFields(BeanValidationBinder<Job> binder) {
-        super.bindFormFields(binder);
-        binder.forField(jobEnvironment).asRequired().bind("jobEnvironment");
+	public void showPlannedDateEmpty() {
+		TedamNotification.showNotification(getLocaleValue("view.jobedit.messages.showPlannedDateEmpty"),
+				NotifyType.ERROR);
+	}
+
+	@Override
+	public void bindFormFields(BeanValidationBinder<Job> binder) {
+		super.bindFormFields(binder);
+		binder.forField(jobEnvironment).asRequired().bind("jobEnvironment");
 		binder.forField(notificationGroup).bind("notificationGroup");
-    }
+	}
 
 	@Override
 	protected void collectGrids() {
@@ -261,7 +273,7 @@ public class JobEditView extends AbstractEditView<Job, JobService, JobEditPresen
 		getGridList().add(gridJobDetails);
 		getGridList().add(gridClients);
 	}
-	
+
 	public void showJobMessage(Job job, String responseString) {
 		NotifyType notifyType = responseString.equals(HttpStatus.OK.getReasonPhrase()) ? NotifyType.SUCCESS
 				: NotifyType.ERROR;
