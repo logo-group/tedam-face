@@ -20,6 +20,15 @@
  */
 package com.lbs.tedam.ui.components.window.teststep.filterfill;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus.ViewEventBus;
+
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.generator.steptype.FilterFillGenerator;
@@ -39,10 +48,6 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.spring.events.EventBus.ViewEventBus;
-
-import java.util.*;
 
 @SpringComponent
 @ViewScope
@@ -96,7 +101,7 @@ public class WindowTestStepTypeFilterFill extends TedamWindow {
 
     @Override
     protected boolean readyToClose() {
-        if (!getFilterFillGenerator().validate()) {
+		if (filterFillEditPresenter.focusFirstErrorField() || !getFilterFillGenerator().validate()) {
             TedamNotification.showNotification(getLocaleValue("window.readytoclose.teststeptype"), NotifyType.ERROR);
             return false;
         }

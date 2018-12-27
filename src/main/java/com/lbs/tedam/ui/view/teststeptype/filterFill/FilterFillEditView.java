@@ -17,6 +17,14 @@
 
 package com.lbs.tedam.ui.view.teststeptype.filterFill;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.lbs.tedam.data.service.SnapshotDefinitionService;
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.SnapshotDefinition;
@@ -40,12 +48,6 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @SpringView
 public class FilterFillEditView extends AbstractEditView<SnapshotDefinition, SnapshotDefinitionService, FilterFillEditPresenter, FilterFillEditView> {
@@ -71,7 +73,8 @@ public class FilterFillEditView extends AbstractEditView<SnapshotDefinition, Sna
         buildGrid();
 
         addSection(getLocaleValue("view.viewedit.section.general"), 0, null, definitionType, description);
-        addSection(getLocaleValue("view.viewedit.section.values"), 0, null, buildTestStepsGridButtons(), gridSnapshotValues);
+		addSection(getLocaleValue("view.viewedit.section.values"), 1, null, buildTestStepsGridButtons(),
+				gridSnapshotValues);
 
         getCancel().setVisible(false);
         getSave().setVisible(false);
