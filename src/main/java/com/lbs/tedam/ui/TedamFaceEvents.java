@@ -1,10 +1,20 @@
 
 package com.lbs.tedam.ui;
 
-import com.lbs.tedam.model.*;
-import com.lbs.tedam.util.EnumsV2.TestStepType;
-
 import java.util.List;
+
+import com.lbs.tedam.model.Client;
+import com.lbs.tedam.model.Environment;
+import com.lbs.tedam.model.Job;
+import com.lbs.tedam.model.JobParameterValue;
+import com.lbs.tedam.model.Project;
+import com.lbs.tedam.model.SnapshotValue;
+import com.lbs.tedam.model.TedamFile;
+import com.lbs.tedam.model.TedamFolder;
+import com.lbs.tedam.model.TestCase;
+import com.lbs.tedam.model.TestSet;
+import com.lbs.tedam.model.TestStep;
+import com.lbs.tedam.util.EnumsV2.TestStepType;
 
 public class TedamFaceEvents {
 

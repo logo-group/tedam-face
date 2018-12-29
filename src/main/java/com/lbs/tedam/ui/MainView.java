@@ -41,6 +41,7 @@ import com.lbs.tedam.ui.view.client.ClientGridView;
 import com.lbs.tedam.ui.view.definedcommand.DraftCommandGridView;
 import com.lbs.tedam.ui.view.environment.EnvironmentGridView;
 import com.lbs.tedam.ui.view.job.JobGridView;
+import com.lbs.tedam.ui.view.jobgroup.JobGroupGridView;
 import com.lbs.tedam.ui.view.jobmanager.TedamManagerView;
 import com.lbs.tedam.ui.view.jobparameter.JobParameterGridView;
 import com.lbs.tedam.ui.view.notification.NotificationGridView;
@@ -92,6 +93,7 @@ public class MainView extends HorizontalLayout implements ViewDisplay, TedamLoca
 	private TedamButton jobManager;
 	private TedamButton testsets;
 	private TedamButton jobs;
+	private TedamButton jobgroups;
 	private TedamButton settings;
 	private TedamButton notifications;
 	private TedamButton draftCommands;
@@ -118,6 +120,7 @@ public class MainView extends HorizontalLayout implements ViewDisplay, TedamLoca
 		attachNavigation(userSettings, UserSettingsView.class,
 				SecurityUtils.getCurrentUser(userService).getTedamUser().getId());
 		attachNavigation(jobs, JobGridView.class, "");
+		attachNavigation(jobgroups, JobGroupGridView.class, "");
 		attachNavigation(testsets, TestSetGridView.class, "");
 		attachNavigation(testcases, TestCaseGridView.class, "");
 		attachNavigation(environment, EnvironmentGridView.class, "");
@@ -222,6 +225,9 @@ public class MainView extends HorizontalLayout implements ViewDisplay, TedamLoca
 		jobs = new TedamButton("view.mainview.jobview", VaadinIcons.AUTOMATION);
 		jobs.addStyleName(ValoTheme.BUTTON_BORDERLESS);
 
+		jobgroups = new TedamButton("view.mainview.jobgroupview", VaadinIcons.GROUP);
+		jobgroups.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+
 		jobManager = new TedamButton("view.mainview.jobmanagerview", VaadinIcons.CONTROLLER);
 		jobManager.addStyleName(ValoTheme.BUTTON_BORDERLESS);
 
@@ -273,7 +279,7 @@ public class MainView extends HorizontalLayout implements ViewDisplay, TedamLoca
 		});
 
 		menu.addComponents(scenarioLabel, testsets, testcases, jobRunnerLabel, singleCommands, draftCommands,
-				jobparameters, environment, clients, jobs, jobManager, userLabel, userSettings, users, projects,
+				jobparameters, environment, clients, jobs, jobgroups, jobManager, userLabel, userSettings, users, projects,
 				settings, notifications, language, logout);
 		return menu;
 	}
