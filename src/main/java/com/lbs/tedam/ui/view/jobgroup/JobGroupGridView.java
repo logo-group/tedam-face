@@ -25,15 +25,21 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.lbs.tedam.data.service.JobGroupService;
+import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.JobGroup;
+import com.lbs.tedam.ui.components.basic.TedamButton;
 import com.lbs.tedam.ui.components.grid.GridColumns;
 import com.lbs.tedam.ui.components.grid.GridColumns.GridColumn;
 import com.lbs.tedam.ui.components.grid.RUDOperations;
 import com.lbs.tedam.ui.components.grid.TedamGridConfig;
+import com.lbs.tedam.ui.util.TedamNotification;
+import com.lbs.tedam.ui.util.TedamNotification.NotifyType;
 import com.lbs.tedam.ui.view.AbstractGridView;
 import com.lbs.tedam.ui.view.jobgroup.edit.JobGroupEditView;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
 
 @SpringView
@@ -50,6 +56,7 @@ public class JobGroupGridView extends AbstractGridView<JobGroup, JobGroupService
 	private void init() {
 		getPresenter().setView(this);
 		setHeader(getLocaleValue("view.jobgroupgrid.header"));
+		getTopBarLayout().addComponents(buildFollowJobGroups(), buildUnfollowJobGroups());
 	}
 
 	private TedamGridConfig<JobGroup> config = new TedamGridConfig<JobGroup>() {
@@ -87,6 +94,78 @@ public class JobGroupGridView extends AbstractGridView<JobGroup, JobGroupService
 	@Override
 	protected Class<? extends View> getEditView() {
 		return JobGroupEditView.class;
+	}
+
+	private Component buildFollowJobGroups() {
+		TedamButton followJobs = new TedamButton("view.jobgrid.followJobs", VaadinIcons.EYE);
+		followJobs.setWidthUndefined();
+		followJobs.setCaption("");
+		followJobs.addClickListener(e -> {
+			if (getGrid().getSelectedItems().isEmpty()) {
+				return;
+			}
+			try {
+				getPresenter().followJobGroups(new ArrayList<>(getGrid().getSelectedItems()));
+				getGrid().deselectAll();
+			} catch (LocalizedException e1) {
+				logError(e1);
+			}
+
+		});
+		return followJobs;
+	}
+
+	private Component buildUnfollowJobGroups() {
+		TedamButton unfollowJobs = new TedamButton("view.jobgrid.unfollowJobs", VaadinIcons.EYE_SLASH);
+		unfollowJobs.setWidthUndefined();
+		unfollowJobs.setCaption("");
+		unfollowJobs.addClickListener(e -> {
+			if (getGrid().getSelectedItems().isEmpty()) {
+				return;
+			}
+			try {
+				getPresenter().unfollowJobGroups(new ArrayList<>(getGrid().getSelectedItems()));
+				getGrid().deselectAll();
+			} catch (LocalizedException e1) {
+				logError(e1);
+			}
+
+		});
+		return unfollowJobs;
+	}
+
+	protected void showActivated(boolean oneActivated, List<String> alreadyActiveNames) {
+		String message = "";
+		if (oneActivated) {
+			String addedMessage = getLocaleValue("view.jobgrid.messages.showJobsFollowed");
+			message += addedMessage + "\n";
+		}
+		if (alreadyActiveNames.size() > 0) {
+			String alreadyActivatedMessage = getLocaleValue("view.jobgrid.messages.showAlreadyFollowed");
+			message += alreadyActivatedMessage + "\n";
+			for (String s : alreadyActiveNames) {
+				message += s + "\n";
+			}
+		}
+		if (message.length() > 0)
+			TedamNotification.showTrayNotification(message, NotifyType.WARNING);
+	}
+
+	protected void showDeActivated(boolean oneDeActivated, List<String> alreadyDeActiveNames) {
+		String message = "";
+		if (oneDeActivated) {
+			String addedMessage = getLocaleValue("view.jobgrid.messages.showJobsUnfollowed");
+			message += addedMessage + "\n";
+		}
+		if (alreadyDeActiveNames.size() > 0) {
+			String alreadyActivatedMessage = getLocaleValue("view.jobgrid.messages.showAlreadyUnfollowed");
+			message += alreadyActivatedMessage + "\n";
+			for (String s : alreadyDeActiveNames) {
+				message += s + "\n";
+			}
+		}
+		if (message.length() > 0)
+			TedamNotification.showNotification(message, NotifyType.WARNING);
 	}
 
 }

@@ -17,6 +17,8 @@
 
 package com.lbs.tedam.ui.view.jobgroup;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -28,6 +30,7 @@ import org.vaadin.spring.events.EventBus.ViewEventBus;
 import com.lbs.tedam.data.service.JobGroupService;
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.data.service.TedamUserService;
+import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.model.JobGroup;
 import com.lbs.tedam.ui.navigation.NavigationManager;
 import com.lbs.tedam.ui.util.Enums.UIParameter;
@@ -57,5 +60,35 @@ public class JobGroupGridPresenter extends AbstractGridPresenter<JobGroup, JobGr
 
 	@Override
 	protected void enterView(Map<UIParameter, Object> parameters) {
+	}
+
+	public void followJobGroups(List<JobGroup> jobGroups) throws LocalizedException {
+		boolean oneFollowed = false;
+		List<String> alreadyFollowedNames = new ArrayList<>();
+		for (JobGroup jobGroup : jobGroups) {
+			if (jobGroup.isActive()) {
+				alreadyFollowedNames.add(jobGroup.getName());
+			} else if (!oneFollowed) {
+				oneFollowed = true;
+			}
+			jobGroup.setActive(true);
+		}
+		getService().save(jobGroups);
+		getView().showActivated(oneFollowed, alreadyFollowedNames);
+	}
+
+	public void unfollowJobGroups(List<JobGroup> jobGroups) throws LocalizedException {
+		boolean oneUnfollowed = false;
+		List<String> alreadyUnfollowedNames = new ArrayList<>();
+		for (JobGroup jobGroup : jobGroups) {
+			if (!jobGroup.isActive()) {
+				alreadyUnfollowedNames.add(jobGroup.getName());
+			} else if (!oneUnfollowed) {
+				oneUnfollowed = true;
+			}
+			jobGroup.setActive(false);
+		}
+		getService().save(jobGroups);
+		getView().showDeActivated(oneUnfollowed, alreadyUnfollowedNames);
 	}
 }
