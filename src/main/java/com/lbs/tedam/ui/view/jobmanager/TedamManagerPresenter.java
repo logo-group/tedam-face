@@ -35,6 +35,7 @@ import org.vaadin.spring.events.annotation.EventBusListenerMethod;
 import com.lbs.tedam.app.TedamRestTemplate;
 import com.lbs.tedam.app.security.SecurityUtils;
 import com.lbs.tedam.data.service.JobDetailService;
+import com.lbs.tedam.data.service.JobGroupService;
 import com.lbs.tedam.data.service.JobService;
 import com.lbs.tedam.data.service.PropertyService;
 import com.lbs.tedam.data.service.TedamUserService;
@@ -44,11 +45,14 @@ import com.lbs.tedam.localization.TedamLocalizerWrapper;
 import com.lbs.tedam.model.Client;
 import com.lbs.tedam.model.Job;
 import com.lbs.tedam.model.JobDetail;
+import com.lbs.tedam.model.JobGroup;
 import com.lbs.tedam.model.Project;
 import com.lbs.tedam.model.TedamUser;
 import com.lbs.tedam.model.DTO.ClientDTO;
 import com.lbs.tedam.ui.AppUI;
 import com.lbs.tedam.ui.TedamFaceEvents.JobEditedEvent;
+import com.lbs.tedam.ui.components.TedamJobGroupPanel;
+import com.lbs.tedam.ui.components.TedamJobGroupPanel.JobGroupPanelButtonClickListener;
 import com.lbs.tedam.ui.components.TedamJobPanel;
 import com.lbs.tedam.ui.components.TedamJobPanel.JobPanelButtonClickListener;
 import com.lbs.tedam.ui.dialog.ConfirmationListener;
@@ -78,11 +82,15 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 
 	public static final String START_JOB = "startJob";
 	private final String STOP_JOB = "stopJob";
+	public static final String START_JOB_GROUP = "startJobGroup";
+	private final String STOP_JOB_GROUP = "stopJobGroup";
 	private final String GET_CLIENT_MAP = "getClientMap";
 
 	private final BeanFactory beanFactory;
 	private final TedamManagerJobDataProvider tedamManagerJobDataProvider;
+	private final TedamManagerJobGroupDataProvider tedamManagerJobGroupDataProvider;
 	private final JobService jobService;
+	private final JobGroupService jobGroupService;
 	private final JobDetailService jobDetailService;
 	private final TestSetService testSetService;
 	private final PropertyService propertyService;
@@ -98,7 +106,8 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 	@Autowired
 	public TedamManagerPresenter(PropertyService propertyService, JobService jobService, ViewEventBus viewEventBus,
 			BeanFactory beanFactory, TedamManagerJobDataProvider tedamManagerJobDataProvider,
-			TedamUserService userService, JobDetailService jobDetailService, TestSetService testSetService) {
+			TedamUserService userService, JobDetailService jobDetailService, TestSetService testSetService,
+			TedamManagerJobGroupDataProvider tedamManagerJobGroupDataProvider, JobGroupService jobGroupService) {
 		this.propertyService = propertyService;
 		this.jobService = jobService;
 		this.viewEventBus = viewEventBus;
@@ -107,6 +116,8 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 		this.userService = userService;
 		this.jobDetailService = jobDetailService;
 		this.testSetService = testSetService;
+		this.tedamManagerJobGroupDataProvider = tedamManagerJobGroupDataProvider;
+		this.jobGroupService = jobGroupService;
 	}
 
 	@PostConstruct
@@ -129,6 +140,108 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 				}
 			}
 		});
+
+		List<JobGroup> runnableJobGroupList = (List<JobGroup>) tedamManagerJobGroupDataProvider.getListDataProvider()
+				.getItems();
+		runnableJobGroupList.forEach(jobGroup -> {
+			TedamJobGroupPanel panel = buildJobGroupPanel(jobGroup);
+			tedamManagerView.addComponent(panel);
+		});
+	}
+
+	private TedamJobGroupPanel buildJobGroupPanel(JobGroup jobGroup) {
+		TedamJobGroupPanel panel = beanFactory.getBean(TedamJobGroupPanel.class);
+		panel.setClickListener(new JobGroupPanelButtonClickListener() {
+
+			@Override
+			public void stopButtonClickOperations(JobGroup jobGroup) {
+				try {
+					doStopJobGroupButtonClickOperations(jobGroup);
+				} catch (LocalizedException e) {
+					getLogger().error(e.getMessage(), e);
+				}
+			}
+
+			@Override
+			public void startButtonClickOperations(JobGroup jobGroup) {
+				try {
+					doStartJobGroupButtonClickOperations(jobGroup);
+				} catch (LocalizedException e) {
+					tedamManagerView.showExceptionMessage(e);
+				}
+			}
+
+			@Override
+			public void unfollowButtonClickOperations(JobGroup jobGroup) {
+				try {
+					doUnfollowJobGroupButtonClickOperations(jobGroup);
+				} catch (LocalizedException e) {
+					getLogger().error(e.getMessage(), e);
+				}
+			}
+
+			@Override
+			public void resetButtonClickOperations(JobGroup jobGroup) {
+				try {
+					doResetJobGroupButtonClickOperations(jobGroup);
+				} catch (LocalizedException e) {
+					getLogger().error(e.getMessage(), e);
+				}
+			}
+		});
+		panel.setJobGroup(jobGroup);
+		return panel;
+	}
+
+	private void doStopJobGroupButtonClickOperations(JobGroup jobGroup) throws LocalizedException {
+		String responseString = restTemplate
+				.postForObject(
+						propertyService.getPropertyByNameAndParameter(Constants.PROPERTY_CONFIG,
+								Constants.PROPERTY_JOBRUNNER_REST_URL).getValue() + STOP_JOB_GROUP,
+						jobGroup.getId(), String.class);
+//		tedamManagerView.showJobMessage(job, responseString);
+//		rebuildTedamJobPanel(job);
+	}
+
+	private void doStartJobGroupButtonClickOperations(JobGroup jobGroup) throws LocalizedException {
+		String responseString = restTemplate
+				.postForObject(
+						propertyService.getPropertyByNameAndParameter(Constants.PROPERTY_CONFIG,
+								Constants.PROPERTY_JOBRUNNER_REST_URL).getValue() + START_JOB_GROUP,
+						jobGroup.getId(), String.class);
+//		tedamManagerView.showJobMessage(job, responseString);
+//		rebuildTedamJobPanel(job);
+	}
+
+	private void doUnfollowJobGroupButtonClickOperations(JobGroup jobGroup) throws LocalizedException {
+		jobGroup.setActive(false);
+		jobGroup = jobGroupService.save(jobGroup);
+//		TedamJobPanel tedamJobPanel = getTedamJobPanel(job);
+//		tedamManagerView.removeComponent(tedamJobPanel);
+	}
+
+	private void doResetJobGroupButtonClickOperations(JobGroup jobGroup) throws LocalizedException {
+		TedamDialog.confirm(AppUI.getCurrent(), new ConfirmationListener() {
+
+			@Override
+			public void onConfirm() {
+				Integer jobId = jobGroup.getId();
+				try {
+					jobService.resetJob(jobId);
+					jobDetailService.resetJobDetail(jobId);
+					testSetService.resetTestSet(jobId);
+					jobGroup.setStatus(JobStatus.NOT_STARTED);
+//					rebuildTedamJobPanel(jobGroup);
+				} catch (LocalizedException e) {
+					getLogger().error(e.getMessage(), e);
+				}
+			}
+
+			@Override
+			public void onCancel() {
+			}
+		}, getLocaleValue("confirm.message.resetJob"), getLocaleValue("general.button.ok"),
+				getLocaleValue("general.button.cancel"));
 	}
 
 	private TedamJobPanel buildPanel(Job job) {

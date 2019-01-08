@@ -26,40 +26,21 @@ import org.springframework.stereotype.Component;
 import com.lbs.tedam.localization.LocaleConstants;
 import com.lbs.tedam.localization.TedamLocalizerWrapper;
 import com.lbs.tedam.model.Job;
-import com.lbs.tedam.ui.components.basic.TedamButton;
 import com.lbs.tedam.ui.components.basic.TedamLabel;
-import com.lbs.tedam.ui.components.basic.TedamPanel;
 import com.lbs.tedam.ui.components.layout.TedamHorizontalLayout;
 import com.lbs.tedam.ui.util.DateTimeFormatter;
 import com.lbs.tedam.ui.util.TedamStatic;
 import com.lbs.tedam.util.EnumsV2.CommandStatus;
-import com.lbs.tedam.util.EnumsV2.JobStatus;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.Resource;
 import com.vaadin.ui.ProgressBar;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
 
 @Component
 @Scope("prototype")
-public class TedamJobPanel extends TedamPanel implements TedamLocalizerWrapper {
+public class TedamJobPanel extends AbstractManagerPanel implements TedamLocalizerWrapper {
 
-    /**
-     * long serialVersionUID
-     */
     private static final long serialVersionUID = 1L;
 
-    private final String JOB_PANEL_STYLE = ValoTheme.PANEL_WELL + " jobpanel";
-
-    private final DateTimeFormatter dateTimeFormetter;
     private Job job;
-
-    private VerticalLayout mainLayout;
-    private TedamButton btnStart;
-    private TedamButton btnStop;
-    private TedamButton btnUnfollow;
-    private TedamButton btnReset;
-
     private JobPanelButtonClickListener clickListener;
 
     @Autowired
@@ -72,30 +53,13 @@ public class TedamJobPanel extends TedamPanel implements TedamLocalizerWrapper {
         initUI();
     }
 
-    private void initUI() {
-        setSizeUndefined();
-
-        mainLayout = new VerticalLayout();
-        setContent(mainLayout);
-    }
-
-    public void build() {
-        setStyleName(JOB_PANEL_STYLE);
+	private void build() {
+		setStyleName(PANEL_STYLE);
         addStyleName(TedamStatic.getJobStatusColorMap().get(job.getStatus()).toString().toLowerCase());
         setCaption(job.getId() + " - " + job.getName());
+		setIcon(VaadinIcons.FILE);
         buildVerticalLayout(job);
-        buildButtons(job);
-
-    }
-
-    private void buildButtons(Job job) {
-        if (JobStatus.getInActiveJobStatus().contains(job.getStatus())) {
-            getBtnStart().setEnabled(true);
-            getBtnStop().setEnabled(false);
-        } else {
-            getBtnStart().setEnabled(false);
-            getBtnStop().setEnabled(true);
-        }
+		buildButtons(job.getStatus());
     }
 
     private void buildVerticalLayout(Job job) {
@@ -112,21 +76,7 @@ public class TedamJobPanel extends TedamPanel implements TedamLocalizerWrapper {
         int completedJobDetailSize = (int) job.getJobDetails().stream().filter(jobDetail -> CommandStatus.COMPLETED.equals(jobDetail.getStatus())).count();
         ProgressBar progressBar = buildProgressBar(completedJobDetailSize, job.getJobDetails().size());
         TedamHorizontalLayout footer = buildFooter(job);
-
         mainLayout.addComponents(environment, lastExecutingUser, progressBar, footer);
-    }
-
-    private ProgressBar buildProgressBar(int completedJobDetailSize, int allJobDetailSize) {
-        ProgressBar progressBar = new ProgressBar();
-        progressBar.setValue(((float) completedJobDetailSize / allJobDetailSize));
-        progressBar.setDescription(completedJobDetailSize + "/" + allJobDetailSize);
-        return progressBar;
-    }
-
-    private TedamLabel buildLabel(String parameter) {
-        TedamLabel label = new TedamLabel(parameter);
-        label.setStyleName(ValoTheme.LABEL_TINY);
-        return label;
     }
 
     private TedamHorizontalLayout buildFooter(Job job) {
@@ -144,27 +94,6 @@ public class TedamJobPanel extends TedamPanel implements TedamLocalizerWrapper {
         btnReset.addClickListener(e -> clickListener.resetButtonClickOperations(job));
         footer.addComponents(btnStart, btnStop, btnUnfollow, btnReset);
         return footer;
-    }
-
-    private TedamButton buildButton(String id, String jobId, Resource icon) {
-        TedamButton button = new TedamButton(id, icon);
-        button.setId(button.getId() + jobId);
-        button.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
-        button.setWidthUndefined();
-        button.setCaption("");
-        return button;
-    }
-
-    public TedamButton getBtnStart() {
-        return btnStart;
-    }
-
-    public TedamButton getBtnStop() {
-        return btnStop;
-    }
-
-	public TedamButton getBtnUnfollow() {
-        return btnUnfollow;
     }
 
     public Job getJob() {
