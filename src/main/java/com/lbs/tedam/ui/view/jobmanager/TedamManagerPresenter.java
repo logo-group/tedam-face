@@ -256,7 +256,7 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 			@Override
 			public void onCancel() {
 			}
-		}, getLocaleValue("confirm.message.resetJob"), getLocaleValue("general.button.ok"),
+		}, getLocaleValue("confirm.message.resetJobGroup"), getLocaleValue("general.button.ok"),
 				getLocaleValue("general.button.cancel"));
 	}
 
