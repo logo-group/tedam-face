@@ -213,6 +213,10 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 	}
 
 	private void doStartJobGroupButtonClickOperations(JobGroup jobGroup) throws LocalizedException {
+		for (Job job : jobGroup.getJobs()) {
+			jobService.saveJobAndJobDetailsStatus(job, JobStatus.QUEUED, CommandStatus.NOT_STARTED,
+					SecurityUtils.getCurrentUser(userService).getTedamUser());
+		}
 		String responseString = restTemplate
 				.postForObject(
 						propertyService.getPropertyByNameAndParameter(Constants.PROPERTY_CONFIG,
