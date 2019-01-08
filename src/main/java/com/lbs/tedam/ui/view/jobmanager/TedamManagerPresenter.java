@@ -127,9 +127,16 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 
 	public void build() {
 		removeAllTedamJobPanel();
+
 		List<Job> runnableJobList = (List<Job>) tedamManagerJobDataProvider.getListDataProvider().getItems();
+		List<JobGroup> runnableJobGroupList = (List<JobGroup>) tedamManagerJobGroupDataProvider.getListDataProvider()
+				.getItems();
+
 		sortJobsByExecutionDate(runnableJobList);
+		sortJobGroupsByExecutionDate(runnableJobGroupList);
+
 		String loggedInUser = getLoggedInUser();
+
 		runnableJobList.forEach(job -> {
 			if (jobStatusList.isEmpty() || jobStatusList.contains(job.getStatus())) {
 				if (jobTypeList.isEmpty() || jobTypeList.contains(job.getType())) {
@@ -141,11 +148,13 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 			}
 		});
 
-		List<JobGroup> runnableJobGroupList = (List<JobGroup>) tedamManagerJobGroupDataProvider.getListDataProvider()
-				.getItems();
 		runnableJobGroupList.forEach(jobGroup -> {
-			TedamJobGroupPanel panel = buildJobGroupPanel(jobGroup);
-			tedamManagerView.addComponent(panel);
+			if (jobStatusList.isEmpty() || jobStatusList.contains(jobGroup.getStatus())) {
+				if (!areOnlyOwnJobs || jobGroup.getCreatedUser().equals(loggedInUser)) {
+					TedamJobGroupPanel panel = buildJobGroupPanel(jobGroup);
+					tedamManagerView.addComponent(panel);
+				}
+			}
 		});
 	}
 
@@ -199,8 +208,8 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 						propertyService.getPropertyByNameAndParameter(Constants.PROPERTY_CONFIG,
 								Constants.PROPERTY_JOBRUNNER_REST_URL).getValue() + STOP_JOB_GROUP,
 						jobGroup.getId(), String.class);
-//		tedamManagerView.showJobMessage(job, responseString);
-//		rebuildTedamJobPanel(job);
+		tedamManagerView.showPanelMessage(jobGroup.getId(), jobGroup.getName(), jobGroup.getStatus(), responseString);
+		rebuildTedamJobGroupPanel(jobGroup);
 	}
 
 	private void doStartJobGroupButtonClickOperations(JobGroup jobGroup) throws LocalizedException {
@@ -209,15 +218,15 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 						propertyService.getPropertyByNameAndParameter(Constants.PROPERTY_CONFIG,
 								Constants.PROPERTY_JOBRUNNER_REST_URL).getValue() + START_JOB_GROUP,
 						jobGroup.getId(), String.class);
-//		tedamManagerView.showJobMessage(job, responseString);
-//		rebuildTedamJobPanel(job);
+		tedamManagerView.showPanelMessage(jobGroup.getId(), jobGroup.getName(), jobGroup.getStatus(), responseString);
+		rebuildTedamJobGroupPanel(jobGroup);
 	}
 
 	private void doUnfollowJobGroupButtonClickOperations(JobGroup jobGroup) throws LocalizedException {
 		jobGroup.setActive(false);
 		jobGroup = jobGroupService.save(jobGroup);
-//		TedamJobPanel tedamJobPanel = getTedamJobPanel(job);
-//		tedamManagerView.removeComponent(tedamJobPanel);
+		TedamJobGroupPanel tedamJobGroupPanel = getTedamJobGroupPanel(jobGroup);
+		tedamManagerView.removeComponent(tedamJobGroupPanel);
 	}
 
 	private void doResetJobGroupButtonClickOperations(JobGroup jobGroup) throws LocalizedException {
@@ -231,7 +240,7 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 					jobDetailService.resetJobDetail(jobId);
 					testSetService.resetTestSet(jobId);
 					jobGroup.setStatus(JobStatus.NOT_STARTED);
-//					rebuildTedamJobPanel(jobGroup);
+					rebuildTedamJobGroupPanel(jobGroup);
 				} catch (LocalizedException e) {
 					getLogger().error(e.getMessage(), e);
 				}
@@ -298,7 +307,7 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 						propertyService.getPropertyByNameAndParameter(Constants.PROPERTY_CONFIG,
 								Constants.PROPERTY_JOBRUNNER_REST_URL).getValue() + STOP_JOB,
 						job.getId(), String.class);
-		tedamManagerView.showJobMessage(job, responseString);
+		tedamManagerView.showPanelMessage(job.getId(), job.getName(), job.getStatus(), responseString);
 		rebuildTedamJobPanel(job);
 	}
 
@@ -311,7 +320,7 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 						propertyService.getPropertyByNameAndParameter(Constants.PROPERTY_CONFIG,
 								Constants.PROPERTY_JOBRUNNER_REST_URL).getValue() + START_JOB,
 						job.getId(), String.class);
-		tedamManagerView.showJobMessage(job, responseString);
+		tedamManagerView.showPanelMessage(job.getId(), job.getName(), job.getStatus(), responseString);
 		rebuildTedamJobPanel(job);
 	}
 
@@ -375,12 +384,30 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 		}
 	}
 
+	private void rebuildTedamJobGroupPanel(JobGroup jobGroup) {
+		TedamJobGroupPanel tedamJobGroupPanel = getTedamJobGroupPanel(jobGroup);
+		if (tedamJobGroupPanel != null) {
+			tedamJobGroupPanel.setJobGroup(jobGroup);
+		}
+	}
+
+	private TedamJobGroupPanel getTedamJobGroupPanel(JobGroup jobGroup) {
+		for (Component component : tedamManagerView) {
+			if (component instanceof TedamJobGroupPanel) {
+				TedamJobGroupPanel tedamJobGroupPanel = (TedamJobGroupPanel) component;
+				if (tedamJobGroupPanel != null && tedamJobGroupPanel.getJobGroup().equals(jobGroup)) {
+					return tedamJobGroupPanel;
+				}
+			}
+		}
+		return null;
+	}
+
 	public void removeAllTedamJobPanel() {
 		for (int i = 0; i < tedamManagerView.getComponentCount(); i++) {
 			Component component = tedamManagerView.getComponent(i);
-			if (component instanceof TedamJobPanel) {
-				TedamJobPanel tedamJobPanel = (TedamJobPanel) component;
-				tedamManagerView.removeComponent(tedamJobPanel);
+			if (component instanceof TedamJobPanel || component instanceof TedamJobGroupPanel) {
+				tedamManagerView.removeComponent(component);
 				i--;
 			}
 		}
@@ -456,6 +483,18 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 		Collections.sort(runnableJobList, new Comparator<Job>() {
 			@Override
 			public int compare(Job j1, Job j2) {
+				if (j1.getLastExecutedStartDate() == null || j2.getLastExecutedStartDate() == null) {
+					return 0;
+				}
+				return j2.getLastExecutedStartDate().compareTo(j1.getLastExecutedStartDate());
+			}
+		});
+	}
+
+	private void sortJobGroupsByExecutionDate(List<JobGroup> runnableJobGroupList) {
+		Collections.sort(runnableJobGroupList, new Comparator<JobGroup>() {
+			@Override
+			public int compare(JobGroup j1, JobGroup j2) {
 				if (j1.getLastExecutedStartDate() == null || j2.getLastExecutedStartDate() == null) {
 					return 0;
 				}

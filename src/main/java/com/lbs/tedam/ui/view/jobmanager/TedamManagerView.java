@@ -29,7 +29,6 @@ import org.springframework.http.HttpStatus;
 
 import com.lbs.tedam.exception.localized.LocalizedException;
 import com.lbs.tedam.localization.TedamLocalizerWrapper;
-import com.lbs.tedam.model.Job;
 import com.lbs.tedam.ui.components.CustomExceptions.TedamWindowNotAbleToOpenException;
 import com.lbs.tedam.ui.components.basic.TedamButton;
 import com.lbs.tedam.ui.components.basic.TedamCheckBox;
@@ -221,10 +220,10 @@ public class TedamManagerView extends CssLayout implements Serializable, View, H
 		midBarLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
 	}
 
-	public void showJobMessage(Job job, String responseString) {
+	public void showPanelMessage(Integer id, String name, JobStatus status, String responseString) {
 		NotifyType notifyType = responseString.equals(HttpStatus.OK.getReasonPhrase()) ? NotifyType.SUCCESS
 				: NotifyType.ERROR;
-		TedamNotification.showTrayNotification(job.getId() + " - " + job.getName() + " " + job.getStatus(), notifyType);
+		TedamNotification.showTrayNotification(id + " - " + name + " " + status, notifyType);
 	}
 
 	public void showExceptionMessage(LocalizedException e) {
