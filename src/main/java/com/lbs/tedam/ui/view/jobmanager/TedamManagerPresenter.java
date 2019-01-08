@@ -18,6 +18,7 @@
 package com.lbs.tedam.ui.view.jobmanager;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -217,6 +218,9 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 			jobService.saveJobAndJobDetailsStatus(job, JobStatus.QUEUED, CommandStatus.NOT_STARTED,
 					SecurityUtils.getCurrentUser(userService).getTedamUser());
 		}
+		jobGroup.setLastExecutedStartDate(LocalDateTime.now());
+		jobGroup.setLastExecutingUser(SecurityUtils.getCurrentUser(userService).getTedamUser());
+		jobGroupService.save(jobGroup);
 		String responseString = restTemplate
 				.postForObject(
 						propertyService.getPropertyByNameAndParameter(Constants.PROPERTY_CONFIG,
