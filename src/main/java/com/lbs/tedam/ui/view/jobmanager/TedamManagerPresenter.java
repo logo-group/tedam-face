@@ -234,16 +234,23 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 
 			@Override
 			public void onConfirm() {
-				Integer jobId = jobGroup.getId();
+				for (Job job : jobGroup.getJobs()) {
+					try {
+						Integer jobId = job.getId();
+						jobService.resetJob(jobId);
+						jobDetailService.resetJobDetail(jobId);
+						testSetService.resetTestSet(jobId);
+					} catch (LocalizedException e) {
+						getLogger().error(e.getMessage(), e);
+					}
+				}
 				try {
-					jobService.resetJob(jobId);
-					jobDetailService.resetJobDetail(jobId);
-					testSetService.resetTestSet(jobId);
 					jobGroup.setStatus(JobStatus.NOT_STARTED);
-					rebuildTedamJobGroupPanel(jobGroup);
+					jobGroupService.save(jobGroup);
 				} catch (LocalizedException e) {
 					getLogger().error(e.getMessage(), e);
 				}
+				rebuildTedamJobGroupPanel(jobGroup);
 			}
 
 			@Override

@@ -111,7 +111,8 @@ public class TedamJobGroupPanel extends AbstractManagerPanel implements TedamLoc
 		btnUnfollow.addClickListener(e -> clickListener.unfollowButtonClickOperations(jobGroup));
 		btnReset = buildButton("view.tedammanager.button.resetJob", jobGroup.getId().toString(), VaadinIcons.REFRESH);
 		btnReset.addClickListener(e -> clickListener.resetButtonClickOperations(jobGroup));
-        footer.addComponents(btnStart, btnStop, btnUnfollow, btnReset);
+//        footer.addComponents(btnStart, btnStop, btnUnfollow, btnReset);
+		footer.addComponents(btnStart, btnStop, btnUnfollow);
         return footer;
     }
 
