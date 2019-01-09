@@ -218,6 +218,7 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 		for (Job job : jobGroup.getJobs()) {
 			jobService.checkJobBeforeRun(job);
 		}
+		jobGroupService.checkForRunningJobGroups(jobGroup, getUserActiveProject());
 		for (Job job : jobGroup.getJobs()) {
 			jobService.saveJobAndJobDetailsStatus(job, JobStatus.QUEUED, CommandStatus.NOT_STARTED,
 					SecurityUtils.getCurrentUser(userService).getTedamUser());
