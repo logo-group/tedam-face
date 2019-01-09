@@ -219,6 +219,8 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 			jobService.checkJobBeforeRun(job);
 		}
 		jobGroupService.checkForRunningJobGroups(jobGroup, getUserActiveProject());
+		List<Integer> jobIdListForJobGroup = jobService.getJobIdListForJobGroup(getUserActiveProject());
+		jobGroupService.checkForRunningJobs(jobGroup, jobIdListForJobGroup);
 		for (Job job : jobGroup.getJobs()) {
 			jobService.saveJobAndJobDetailsStatus(job, JobStatus.QUEUED, CommandStatus.NOT_STARTED,
 					SecurityUtils.getCurrentUser(userService).getTedamUser());
@@ -332,8 +334,18 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 		rebuildTedamJobPanel(job);
 	}
 
+	private JobGroup createDummyJobGroup(Job job) {
+		JobGroup dummy = new JobGroup();
+		dummy.setId(Integer.valueOf(0));
+		dummy.setJobs(new ArrayList<>());
+		dummy.getJobs().add(job);
+		return dummy;
+	}
+
 	private void doStartButtonClickOperations(Job job) throws LocalizedException {
 		jobService.checkJobBeforeRun(job);
+		JobGroup dummyJobGroup = createDummyJobGroup(job);
+		jobGroupService.checkForRunningJobGroups(dummyJobGroup, getUserActiveProject());
 		job = jobService.saveJobAndJobDetailsStatus(job, JobStatus.QUEUED, CommandStatus.NOT_STARTED,
 				SecurityUtils.getCurrentUser(userService).getTedamUser());
 		String responseString = restTemplate
