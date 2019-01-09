@@ -209,11 +209,15 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 						propertyService.getPropertyByNameAndParameter(Constants.PROPERTY_CONFIG,
 								Constants.PROPERTY_JOBRUNNER_REST_URL).getValue() + STOP_JOB_GROUP,
 						jobGroup.getId(), String.class);
+		jobGroup = jobGroupService.getById(jobGroup.getId());
 		tedamManagerView.showPanelMessage(jobGroup.getId(), jobGroup.getName(), jobGroup.getStatus(), responseString);
 		rebuildTedamJobGroupPanel(jobGroup);
 	}
 
 	private void doStartJobGroupButtonClickOperations(JobGroup jobGroup) throws LocalizedException {
+		for (Job job : jobGroup.getJobs()) {
+			jobService.checkJobBeforeRun(job);
+		}
 		for (Job job : jobGroup.getJobs()) {
 			jobService.saveJobAndJobDetailsStatus(job, JobStatus.QUEUED, CommandStatus.NOT_STARTED,
 					SecurityUtils.getCurrentUser(userService).getTedamUser());
@@ -226,6 +230,7 @@ public class TedamManagerPresenter implements HasLogger, Serializable, TedamLoca
 						propertyService.getPropertyByNameAndParameter(Constants.PROPERTY_CONFIG,
 								Constants.PROPERTY_JOBRUNNER_REST_URL).getValue() + START_JOB_GROUP,
 						jobGroup.getId(), String.class);
+		jobGroup = jobGroupService.getById(jobGroup.getId());
 		tedamManagerView.showPanelMessage(jobGroup.getId(), jobGroup.getName(), jobGroup.getStatus(), responseString);
 		rebuildTedamJobGroupPanel(jobGroup);
 	}
