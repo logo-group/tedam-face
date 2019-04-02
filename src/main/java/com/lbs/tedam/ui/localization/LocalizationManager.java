@@ -17,30 +17,31 @@
 
 package com.lbs.tedam.ui.localization;
 
-import com.lbs.tedam.localization.LocaleConstants;
+import org.springframework.stereotype.Component;
+
 import com.lbs.tedam.localization.Localizer;
 import com.lbs.tedam.localization.LocalizerManager;
-import org.springframework.stereotype.Component;
+import com.lbs.tedam.ui.util.LocalizationFactory;
 
 @Component
 public class LocalizationManager {
 
-    public LocalizationManager() {
-        initLocalization();
-    }
+	public LocalizationManager() {
+		initLocalization();
+	}
 
-    private void initLocalization() {
-        Localizer localizer = Localizer.instance("tedamface", "localization.tedamface");
-        LocalizerManager.putLocalizer("tedamface", localizer);
+	private void initLocalization() {
+		Localizer localizer = Localizer.instance("tedamface", "localization.tedamface");
+		LocalizerManager.putLocalizer("tedamface", localizer);
 
-        Localizer formOpenLocalizer = Localizer.instance("formopen", "localization.formopen");
-        LocalizerManager.putLocalizer("formopen", formOpenLocalizer);
+		Localizer formOpenLocalizer = Localizer.instance("formopen", "localization.formopen");
+		LocalizerManager.putLocalizer("formopen", formOpenLocalizer);
 
-        Localizer exceptionLocalizer = Localizer.instance("localizedException", "localization.localizedException");
-        LocalizerManager.putLocalizer("localizedException", exceptionLocalizer);
+		Localizer exceptionLocalizer = Localizer.instance("localizedException", "localization.localizedException");
+		LocalizerManager.putLocalizer("localizedException", exceptionLocalizer);
 
-        // TODO language to be learned from the outside
-        LocalizerManager.loadLocaleForAll(LocaleConstants.LOCALE_TRTR);
-    }
+		// TODO language to be learned from the outside
+		LocalizerManager.loadLocaleForAll(LocalizationFactory.getDefaultLanguage());
+	}
 
 }
